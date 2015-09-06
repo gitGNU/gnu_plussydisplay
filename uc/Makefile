@@ -19,7 +19,7 @@
 
 BINARY = src/plussyuc
 
-# OBJS = 
+OBJS += src/ws2811.o src/util.o
 
 LDSCRIPT = nucleo-f401re.ld
 

@@ -16,38 +16,14 @@
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <libopencm3/stm32/rcc.h>
-#include <libopencm3/stm32/gpio.h>
-#include "ws2811.h"
-#include "util.h"
+#ifndef WS2811_H_
+#define WS2811_H_
 
-static void gpio_setup(void)
-{
-	rcc_periph_clock_enable(RCC_GPIOA);
-	gpio_mode_setup(GPIOA, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, GPIO5);
-}
+#define WS2811_NLEDS 20
 
-int main(void)
-{
-	rcc_clock_setup_hse_3v3(&hse_12mhz_3v3[CLOCK_3V3_84MHZ]);
-	gpio_setup();
-	tmr_setup();
-	ws2811_setup();
+void ws2811_setup(void);
+void ws2811_ledctrl(uint8_t i, uint8_t r, uint8_t g, uint8_t b);
+void ws2811_update(void);
+uint8_t ws2811_ready(void);
 
-	uint8_t cnt = 0;
-	while (1)
-	{
-		gpio_toggle(GPIOA, GPIO5);
-		
-		for(int i = 0; i < WS2811_NLEDS; i++)
-			ws2811_ledctrl(i,((cnt+i)%3==0)?255:0,((cnt+i)%5<3)?255:0,((cnt+i)%7>3)?255:0);
-		ws2811_update();
-		
-		tmr_delay_ms(200);
-		tmr_wait();
-		
-		cnt++;
-	}
-
-	return 0;
-}
+#endif
