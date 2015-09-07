@@ -40,10 +40,11 @@ int main(void)
 		gpio_toggle(GPIOA, GPIO5);
 		
 		for(int i = 0; i < WS2811_NLEDS; i++)
-			ws2811_ledctrl(i,((cnt+i)%3==0)?255:0,((cnt+i)%5<3)?255:0,((cnt+i)%7>3)?255:0);
+			//ws2811_ledctrl_rgb(i,((cnt+i)%3==0)?255:0,((cnt+i)%5<3)?255:0,((cnt+i)%7>3)?255:0);
+			ws2811_ledctrl_h(i,cnt+i*10);
 		ws2811_update();
 		
-		tmr_delay_ms(200);
+		tmr_delay_ms(10);
 		tmr_wait();
 		
 		cnt++;

@@ -30,16 +30,16 @@
 #define WS2811_T1H 100
 
 #define PWM_DATA_LEN (8*3*WS2811_NLEDS+50)
+// => total time: ~1.3ms
 
 uint16_t pwmData[PWM_DATA_LEN];
 uint8_t rgbData[WS2811_NLEDS*3];
 
 static volatile uint8_t done = 1;
 
-/*
-static void h2rgb(uint8_t* rgb, uint8_t h)
+static void h2rgb(uint8_t* rgb, uint8_t h) // h = HSV with hue only ;-)
 {
-	uint8_t i = h/43;
+	uint8_t i = h/43; // roughly /(255/6)
 	uint8_t f = h%43;
 	uint8_t p = 0;
 	uint8_t q = 255-f*6;
@@ -54,7 +54,6 @@ static void h2rgb(uint8_t* rgb, uint8_t h)
 		default: rgb[0] = 255; rgb[1] = p; rgb[2] = q; break;
 	}
 }
-*/
 
 static void rgb2pwm(void)
 {
@@ -64,9 +63,10 @@ static void rgb2pwm(void)
 		for(int j = 0; j < 8; j++)
 		{
 			if(v & 1)
-				pwmData[8*i+j] = WS2811_T0H;
+				pwmData[8*i+7-j] = WS2811_T0H;
 			else
-				pwmData[8*i+j] = WS2811_T1H;
+				pwmData[8*i+7-j] = WS2811_T1H;
+			v >>= 1;
 		}
 	}
 }
@@ -119,13 +119,21 @@ void dma1_stream4_isr(void)
 }
 
 
-void ws2811_ledctrl(uint8_t i, uint8_t r, uint8_t g, uint8_t b)
+void ws2811_ledctrl_rgb(uint8_t i, uint8_t r, uint8_t g, uint8_t b)
 {
 	if(i < WS2811_NLEDS)
 	{
 		rgbData[i*3] = r;
 		rgbData[i*3+1] = g;
 		rgbData[i*3+2] = b;
+	}
+}
+
+void ws2811_ledctrl_h(uint8_t i, uint8_t h)
+{
+	if(i < WS2811_NLEDS)
+	{
+		h2rgb(rgbData+i*3, h);
 	}
 }
 

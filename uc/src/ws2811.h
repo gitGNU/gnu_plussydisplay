@@ -22,7 +22,8 @@
 #define WS2811_NLEDS 20
 
 void ws2811_setup(void);
-void ws2811_ledctrl(uint8_t i, uint8_t r, uint8_t g, uint8_t b);
+void ws2811_ledctrl_rgb(uint8_t i, uint8_t r, uint8_t g, uint8_t b);
+void ws2811_ledctrl_h(uint8_t i, uint8_t h);
 void ws2811_update(void);
 uint8_t ws2811_ready(void);
 
