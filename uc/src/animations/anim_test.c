@@ -16,15 +16,16 @@
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef WS2811_H_
-#define WS2811_H_
+#include "common.h"
 
-#include <stdint.h>
+static uint8_t cnt = 0;
 
-void ws2811_setup(void);
-void ws2811_update(void);
-uint8_t ws2811_ready(void);
-
-void ws2811_get_buffer(uint8_t** buf, uint16_t* bufSize);
-
-#endif
+void anim_test(uint8_t* data, uint16_t len)
+{
+	uint16_t nLeds = len/3;
+	
+	for(int i = 0; i < nLeds; i++)
+		h2rgb(data+3*i, cnt+i*10);
+	
+	cnt++;
+}

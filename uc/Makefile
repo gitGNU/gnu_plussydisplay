@@ -19,7 +19,8 @@
 
 BINARY = src/plussyuc
 
-OBJS += src/ws2811.o src/util.o
+ANIM_SRC=$(shell find src/animations -name '*.c')
+OBJS += src/ws2811.o src/util.o $(ANIM_SRC:.c=.o)
 
 LDSCRIPT = nucleo-f401re.ld
 

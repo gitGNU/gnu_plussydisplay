@@ -24,6 +24,8 @@
 
 #include "ws2811.h"
 
+#define WS2811_NLEDS 20
+
 // prescaler /1: 2.5us period
 #define WS2811_PERIOD 210
 #define WS2811_T0H 42
@@ -36,24 +38,6 @@ uint16_t pwmData[PWM_DATA_LEN];
 uint8_t rgbData[WS2811_NLEDS*3];
 
 static volatile uint8_t done = 1;
-
-static void h2rgb(uint8_t* rgb, uint8_t h) // h = HSV with hue only ;-)
-{
-	uint8_t i = h/43; // roughly /(255/6)
-	uint8_t f = h%43;
-	uint8_t p = 0;
-	uint8_t q = 255-f*6;
-	uint8_t t = f*6;
-	switch(i)
-	{
-		case 0: rgb[0] = 255; rgb[1] = t; rgb[2] = p; break;
-		case 1: rgb[0] = q; rgb[1] = 255; rgb[2] = p; break;
-		case 2: rgb[0] = p; rgb[1] = 255; rgb[2] = t; break;
-		case 3: rgb[0] = p; rgb[1] = q; rgb[2] = 255; break;
-		case 4: rgb[0] = t; rgb[1] = p; rgb[2] = 255; break;
-		default: rgb[0] = 255; rgb[1] = p; rgb[2] = q; break;
-	}
-}
 
 static void rgb2pwm(void)
 {
@@ -118,25 +102,6 @@ void dma1_stream4_isr(void)
 	}
 }
 
-
-void ws2811_ledctrl_rgb(uint8_t i, uint8_t r, uint8_t g, uint8_t b)
-{
-	if(i < WS2811_NLEDS)
-	{
-		rgbData[i*3] = r;
-		rgbData[i*3+1] = g;
-		rgbData[i*3+2] = b;
-	}
-}
-
-void ws2811_ledctrl_h(uint8_t i, uint8_t h)
-{
-	if(i < WS2811_NLEDS)
-	{
-		h2rgb(rgbData+i*3, h);
-	}
-}
-
 uint8_t ws2811_ready(void)
 {
 	return done;
@@ -156,3 +121,8 @@ void ws2811_update(void)
 	}
 }
 
+void ws2811_get_buffer(uint8_t** buf, uint16_t* bufSize)
+{
+	*buf = rgbData;
+	*bufSize = sizeof(rgbData);
+}

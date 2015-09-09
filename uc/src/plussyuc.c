@@ -20,6 +20,7 @@
 #include <libopencm3/stm32/gpio.h>
 #include "ws2811.h"
 #include "util.h"
+#include "animations/common.h"
 
 static void gpio_setup(void)
 {
@@ -33,21 +34,23 @@ int main(void)
 	gpio_setup();
 	tmr_setup();
 	ws2811_setup();
+	
+	uint8_t* rgbData = 0;
+	uint16_t rgbDataLen = 0;
+	ws2811_get_buffer(&rgbData, &rgbDataLen);
 
-	uint8_t cnt = 0;
 	while (1)
 	{
-		gpio_toggle(GPIOA, GPIO5);
-		
-		for(int i = 0; i < WS2811_NLEDS; i++)
-			//ws2811_ledctrl_rgb(i,((cnt+i)%3==0)?255:0,((cnt+i)%5<3)?255:0,((cnt+i)%7>3)?255:0);
-			ws2811_ledctrl_h(i,cnt+i*10);
-		ws2811_update();
-		
+		// configure display update timer with period per frame (100 Hz)
 		tmr_delay_ms(10);
+		// toggle LED
+		gpio_toggle(GPIOA, GPIO5);
+		// calculate next frame
+		anim_test(rgbData, rgbDataLen);
+		// wait if frame time has not yet passed
 		tmr_wait();
-		
-		cnt++;
+		// trigger display update
+		ws2811_update();
 	}
 
 	return 0;

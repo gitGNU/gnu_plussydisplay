@@ -16,15 +16,15 @@
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef WS2811_H_
-#define WS2811_H_
+#ifndef COMMON_H_
+#define COMMON_H_
 
 #include <stdint.h>
 
-void ws2811_setup(void);
-void ws2811_update(void);
-uint8_t ws2811_ready(void);
+// convert hue to rgb
+void h2rgb(uint8_t* rgb, uint8_t h); // h = HSV with hue only ;-)
 
-void ws2811_get_buffer(uint8_t** buf, uint16_t* bufSize);
+// animations
+void anim_test(uint8_t* data, uint16_t len);
 
 #endif
