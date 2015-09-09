@@ -41,12 +41,14 @@ int main(void)
 
 	while (1)
 	{
-		// configure display update timer with period per frame (100 Hz)
-		tmr_delay_ms(10);
 		// toggle LED
 		gpio_toggle(GPIOA, GPIO5);
+		// configure display update timer with period per frame (100 Hz)
+		tmr_delay_us(10000);
 		// calculate next frame
 		anim_test(rgbData, rgbDataLen);
+		// determine how much time has passed
+		uint16_t compTime = tmr_get_status(); // TODO: ouput to serial port?
 		// wait if frame time has not yet passed
 		tmr_wait();
 		// trigger display update

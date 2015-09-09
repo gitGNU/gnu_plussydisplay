@@ -36,9 +36,12 @@ void tmr_setup(void)
 	nvic_enable_irq(NVIC_TIM4_IRQ);
 }
 
+#define TMR_PSC_US 84-1
+#define TMR_PSC_MS 42000-1
+
 void tmr_delay_us(uint16_t delay) // max. (2^16-1) = 65535 us
 {
-	TIM4_PSC = 84-1; // 1 us -> 1 step
+	TIM4_PSC = TMR_PSC_US; // 1 us -> 1 step
 	TIM4_CNT = 0;
 	TIM4_ARR = delay;
 	_tmr_done = 0;
@@ -47,7 +50,7 @@ void tmr_delay_us(uint16_t delay) // max. (2^16-1) = 65535 us
 
 void tmr_delay_ms(uint16_t delay) // max delay: ca. 32000 ms
 {
-	TIM4_PSC = 42000-1;
+	TIM4_PSC = TMR_PSC_MS;
 	TIM4_CNT = 0;
 	TIM4_ARR = delay*2;
 	_tmr_done = 0;
@@ -57,6 +60,14 @@ void tmr_delay_ms(uint16_t delay) // max delay: ca. 32000 ms
 void tmr_wait(void)
 {
 	while(!_tmr_done);
+}
+
+uint16_t tmr_get_status(void)
+{
+	if(TIM4_PSC == TMR_PSC_MS)
+		return TIM4_CNT/2;
+	else
+		return TIM4_CNT;
 }
 
 void tim4_isr(void)

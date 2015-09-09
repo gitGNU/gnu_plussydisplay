@@ -27,7 +27,7 @@ void tmr_setup(void);
 void tmr_delay_us(uint16_t delay); // max. (2^16-1) = 65535 us
 void tmr_delay_ms(uint16_t delay); // max delay: 2^16/10-1 = 6552 ms
 void tmr_wait(void);
-
+uint16_t tmr_get_status(void);
 
 
 #endif /* UTIL_H_ */
