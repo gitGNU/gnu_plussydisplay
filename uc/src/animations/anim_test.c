@@ -18,14 +18,18 @@
 
 #include "common.h"
 
-static uint8_t cnt = 0;
+static uint32_t cnt = 0;
 
 void anim_test(uint8_t* data, uint16_t len)
 {
 	uint16_t nLeds = len/3;
 	
 	for(int i = 0; i < nLeds; i++)
-		h2rgb(data+3*i, cnt+i*10);
+	{
+		//h2rgb(data+3*i, cnt+i*10);
+		uint32_t h = (cnt+i*10)%360;
+		hsv2rgb_f(data+3*i, h, 1.0f, 1.0f);
+	}
 	
 	cnt++;
 }

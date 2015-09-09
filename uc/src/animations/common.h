@@ -22,7 +22,8 @@
 #include <stdint.h>
 
 // convert hue to rgb
-void h2rgb(uint8_t* rgb, uint8_t h); // h = HSV with hue only ;-)
+void h2rgb(uint8_t* rgb, uint8_t h); // h = HSV with hue only, integer approximation
+void hsv2rgb_f(uint8_t* rgb, float h, float s, float v); // true HSV with floats
 
 // animations
 void anim_test(uint8_t* data, uint16_t len);

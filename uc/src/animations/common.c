@@ -35,3 +35,29 @@ void h2rgb(uint8_t* rgb, uint8_t h) // h = HSV with hue only ;-)
 		default: rgb[0] = 255; rgb[1] = p; rgb[2] = q; break;
 	}
 }
+
+void hsv2rgb_f(uint8_t* rgb, float h, float s, float v)
+{
+	// https://de.wikipedia.org/wiki/HSV-Farbraum#Umrechnung_HSV_in_RGB
+	unsigned int hi = (unsigned int)(h/60.0f);
+	float f = h/60.0f - hi;
+	float p = v*(1.0f - s);
+	float q = v*(1.0f - s*f);
+	float t = v*(1.0f - s*(1.0f-f));
+	
+	float r=0,g=0,b=0;
+	switch(hi)
+	{
+		case 0: case 6: r=v; g=t; b=p; break;
+		case 1: r=q; g=v; b=p; break;
+		case 2: r=p; g=v; b=t; break;
+		case 3: r=p; g=q; b=v; break;
+		case 4: r=t; g=p; b=v; break;
+		case 5: r=v; g=p; b=q; break;
+	}
+	
+	rgb[0] = (uint8_t)(r*255);
+	rgb[1] = (uint8_t)(g*255);
+	rgb[2] = (uint8_t)(b*255);
+}
+
