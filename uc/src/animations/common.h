@@ -25,6 +25,9 @@
 void h2rgb(uint8_t* rgb, uint8_t h); // h = HSV with hue only, integer approximation
 void hsv2rgb_f(uint8_t* rgb, float h, float s, float v); // true HSV with floats
 
+// LUT-based functions
+uint8_t sin4(uint8_t x); // 1/4 of sine function ( floor(sin(0:pi/2/255:pi/2)*255) )
+
 // animations
 void anim_test(uint8_t* data, uint16_t len);
 

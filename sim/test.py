@@ -48,7 +48,7 @@ while not done:
 	if done:
 		break
 	
-	screen.fill((0xff,0xff,0xff))
+	screen.fill((0,0,0))
 	
 	nLeds = len(matrix)
 	dataRgb = [0]*nLeds*3
