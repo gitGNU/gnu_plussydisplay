@@ -16,6 +16,8 @@
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#define PLUSSYUC_C_
+
 #include <libopencm3/stm32/rcc.h>
 #include <libopencm3/stm32/gpio.h>
 #include "ws2811.h"
@@ -38,6 +40,8 @@ int main(void)
 	uint8_t* rgbData = 0;
 	uint16_t rgbDataLen = 0;
 	ws2811_get_buffer(&rgbData, &rgbDataLen);
+	
+	int animSel = 1;
 
 	while (1)
 	{
@@ -46,7 +50,7 @@ int main(void)
 		// configure display update timer with period per frame (100 Hz)
 		tmr_delay_us(10000);
 		// calculate next frame
-		anim_test(rgbData, rgbDataLen);
+		animTable[animSel].func(rgbData, rgbDataLen);
 		// determine how much time has passed
 		uint16_t compTime = tmr_get_status(); // TODO: ouput to serial port?
 		// wait if frame time has not yet passed

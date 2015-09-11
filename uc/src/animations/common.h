@@ -21,14 +21,43 @@
 
 #include <stdint.h>
 
+//#############################################################################
+//# Utility functions
+//#############################################################################
+
 // convert hue to rgb
 void h2rgb(uint8_t* rgb, uint8_t h); // h = HSV with hue only, integer approximation
 void hsv2rgb_f(uint8_t* rgb, float h, float s, float v); // true HSV with floats
 
 // LUT-based functions
-uint8_t sin4(uint8_t x); // 1/4 of sine function ( floor(sin(0:pi/2/255:pi/2)*255) )
+uint8_t sin4(uint8_t x); // 1/4 of sine function ( = floor(sin(0:pi/2/255:pi/2)*255) in GNU octave )
+
+
+//#############################################################################
+//# Animation Definitions
+//#############################################################################
 
 // animations
+struct anim_t
+{
+	const char* name;
+	void (*func)(uint8_t*, uint16_t);
+};
+
+// (1) add your declaration here:
 void anim_test(uint8_t* data, uint16_t len);
+void anim_green(uint8_t* data, uint16_t len);
+
+#ifdef PLUSSYUC_C_
+
+// (2) add your function to this table:
+struct anim_t animTable[] = {
+	{ "Test Animation", &anim_test },
+	{ "Green", &anim_green },
+	{ 0, 0 } // end-of-table flag
+};
+
+
+#endif
 
 #endif
