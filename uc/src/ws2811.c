@@ -47,9 +47,9 @@ static void rgb2pwm(void)
 		for(int j = 0; j < 8; j++)
 		{
 			if(v & 1)
-				pwmData[8*i+7-j] = WS2811_T0H;
-			else
 				pwmData[8*i+7-j] = WS2811_T1H;
+			else
+				pwmData[8*i+7-j] = WS2811_T0H;
 			v >>= 1;
 		}
 	}
