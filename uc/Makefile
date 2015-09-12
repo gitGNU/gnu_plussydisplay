@@ -20,9 +20,18 @@
 BINARY = src/plussyuc
 
 ANIM_SRC=$(shell find src/animations -name '*.c')
-OBJS += src/ws2811.o src/util.o $(ANIM_SRC:.c=.o)
+OBJS += src/ws2811.o src/util.o src/usart.o $(ANIM_SRC:.c=.o)
 
 LDSCRIPT = nucleo-f401re.ld
 
 include libopencm3.target.mk
 
+clean2:
+	-rm -f src/*.o src/*.d src/*.elf src/*.hex src/*.map src/animations/*.d src/animations/*.o
+
+debug:
+	openocd -f interface/ftdi/ft232h.cfg \
+		    -f board/nucleo_f401re_ftdiswd.cfg \
+		    -c "init" -c "reset init"
+
+.PHONY: clean2

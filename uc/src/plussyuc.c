@@ -20,8 +20,11 @@
 
 #include <libopencm3/stm32/rcc.h>
 #include <libopencm3/stm32/gpio.h>
+#include <stdio.h>
+
 #include "ws2811.h"
 #include "util.h"
+#include "usart.h"
 #include "animations/common.h"
 
 static void gpio_setup(void)
@@ -36,23 +39,55 @@ int main(void)
 	gpio_setup();
 	tmr_setup();
 	ws2811_setup();
+	usart_setup();
 	
 	uint8_t* rgbData = 0;
 	uint16_t rgbDataLen = 0;
 	ws2811_get_buffer(&rgbData, &rgbDataLen);
 	
-	int animSel = 1;
+	const int usartDataLen = 256+1;
+	char usartData[usartDataLen];
+	
+	int animSel = -1;
+	int animSelMax = -1;
 
+	while(animTable[animSelMax+1].name) // find end of table
+		animSelMax++;
+
+	uint16_t compTime = 0;
+	int debugCnt = 0;
 	while (1)
 	{
 		// toggle LED
 		gpio_toggle(GPIOA, GPIO5);
 		// configure display update timer with period per frame (100 Hz)
 		tmr_delay_us(10000);
+		
+		// check for commands
+		if(usart_rx_ready())
+		{
+			usart_get_read(usartData, usartDataLen);
+			switch(usartData[0])
+			{
+			case 'e': // [e]cho test
+				sprintf(usartData, "E%d", debugCnt++);
+				usart_write(usartData);
+				break;
+			case 'c': // [c]omputation time
+				sprintf(usartData, "C%d", compTime);
+				usart_write(usartData);
+				break;
+			}
+		}
+		
 		// calculate next frame
-		animTable[animSel].func(rgbData, rgbDataLen);
+		if(animSel < 0)
+			for(int i = 0; i < rgbDataLen; i++)
+				rgbData[i] = 0;
+		else
+			animTable[animSel].func(rgbData, rgbDataLen);
 		// determine how much time has passed
-		uint16_t compTime = tmr_get_status(); // TODO: ouput to serial port?
+		compTime = tmr_get_status(); // TODO: ouput to serial port?
 		// wait if frame time has not yet passed
 		tmr_wait();
 		// trigger display update
