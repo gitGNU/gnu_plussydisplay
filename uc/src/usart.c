@@ -180,7 +180,7 @@ uint8_t usart_rx_ready(void)
 	return rxReq;
 }
 
-void usart_get_read(char* str, uint16_t maxlen)
+int usart_get_read(char* str, uint16_t maxlen)
 {
 	for(int i = 0; (i < maxlen) && (i < (uint8_t)rxLen); i++)
 	{
@@ -189,7 +189,9 @@ void usart_get_read(char* str, uint16_t maxlen)
 	}
 	*str = 0;
 	rxReq = 0;
+	int tmp = rxLen;
 	usart_rx_stream(rxBuf, 1);
+	return tmp;
 }
 
 void usart_write(char* str)

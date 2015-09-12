@@ -24,7 +24,7 @@
 void usart_setup(void);
 uint8_t usart_tx_ready(void);
 uint8_t usart_rx_ready(void);
-void usart_get_read(char* str, uint16_t maxlen);
+int usart_get_read(char* str, uint16_t maxlen);
 void usart_write(char* str);
 
 #endif

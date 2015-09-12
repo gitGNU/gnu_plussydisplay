@@ -21,6 +21,7 @@
 #include <libopencm3/stm32/rcc.h>
 #include <libopencm3/stm32/gpio.h>
 #include <stdio.h>
+#include <string.h>
 
 #include "ws2811.h"
 #include "util.h"
@@ -56,6 +57,7 @@ int main(void)
 
 	uint16_t compTime = 0;
 	int debugCnt = 0;
+
 	while (1)
 	{
 		// toggle LED
@@ -66,25 +68,68 @@ int main(void)
 		// check for commands
 		if(usart_rx_ready())
 		{
-			usart_get_read(usartData, usartDataLen);
-			switch(usartData[0])
+			int len = usart_get_read(usartData, usartDataLen);
+
+			if(len < 1)
 			{
-			case 'e': // [e]cho test
-				sprintf(usartData, "E%d", debugCnt++);
-				usart_write(usartData);
-				break;
-			case 'c': // [c]omputation time
-				sprintf(usartData, "C%d", compTime);
-				usart_write(usartData);
-				break;
+				usart_write("?");
+			}
+			else
+			{
+				int sel = 0;
+				switch(usartData[0])
+				{
+				case 'e': // [e]cho test
+					sprintf(usartData, "E%d", debugCnt++);
+					usart_write(usartData);
+					break;
+				case 'c': // [c]omputation time
+					sprintf(usartData, "C%d", compTime);
+					usart_write(usartData);
+					break;
+				case 's': // [s]top animations
+					animSel = -1;
+					memset(rgbData, 0, rgbDataLen);
+					usart_write("S");
+					break;
+				case 'a': // [a]nimation selection
+					sscanf(usartData+1, "%02x", &sel);
+					if(sel <= animSelMax)
+						animSel = sel;
+					sprintf(usartData, "A%c", animSel==sel ? '1':'0');
+					usart_write(usartData);
+					break;
+				case 'l': // [l]ist query
+					sscanf(usartData+1, "%02x", &sel);
+					sprintf(usartData, "L%s", sel > animSelMax ? "" : animTable[sel].name);
+					usart_write(usartData);
+					break;
+				case 'm': // [m]anual led set
+					sscanf(usartData+1, "%02x", &sel);
+					if(sel < (rgbDataLen/3))
+						sscanf(usartData+3, "%02hhx%02hhx%02hhx", rgbData+3*sel, rgbData+3*sel+1, rgbData+3*sel+2);
+					usart_write("M");
+					break;
+				case 'w': // [w]rite complete led matrix
+					if(len != (1+2*rgbDataLen)) // 1 char command, 6 chars per LED
+					{
+						usart_write("?");
+					}
+					else
+					{
+						for(int i = 0; i < (rgbDataLen/3); i++)
+							sscanf(usartData+1+6*i, "%02hhx%02hhx%02hhx", rgbData+3*i, rgbData+3*i+1, rgbData+3*i+2);
+						usart_write("W");
+					}
+					break;
+				default:
+					usart_write("?");
+				}
 			}
 		}
 		
 		// calculate next frame
-		if(animSel < 0)
-			for(int i = 0; i < rgbDataLen; i++)
-				rgbData[i] = 0;
-		else
+		if(animSel >= 0)
 			animTable[animSel].func(rgbData, rgbDataLen);
 		// determine how much time has passed
 		compTime = tmr_get_status(); // TODO: ouput to serial port?
