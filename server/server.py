@@ -66,12 +66,20 @@ class HardwareThread(threading.Thread):
 	
 	def run(self):
 		sim = xmlrpc.client.ServerProxy("http://localhost:8000") # Debug only!
+		lastM = None
 		while self.contRun:
 			try:
 				req = requestQueue.get(timeout=1)
-				print("hw: " + req.command)
-				ans = sim.cmd(req.command) # Debug: Send to simulation program
-				req.replyQueue.put(ans)
+			
+				if (req.command[0] == "r") and (lastM != None): # quick reply for read command if we know the state
+					req.replyQueue.put("R"+lastM[1:])
+				else: # hardware query
+					print("hw: " + req.command)
+					ans = sim.cmd(req.command) # Debug: Send to simulation program
+					
+					if ans[0] == "M": # store answer for quick replies if command was 'm'
+						lastM = ans
+					req.replyQueue.put(ans)
 				
 			except queue.Empty:
 				pass

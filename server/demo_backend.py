@@ -61,7 +61,9 @@ def cmd(s):
 			dataRgbLock.release()
 		else:
 			return "?"
-		return "M"
+		return "M"+"".join(["%02x"%d for d in dataRgb])
+	elif s[0] == "r":
+		return "R"+"".join(["%02x"%d for d in dataRgb])
 	else:
 		return "?"
 
