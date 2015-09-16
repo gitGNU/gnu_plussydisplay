@@ -42,10 +42,15 @@ int main(void)
 	ws2811_setup();
 	usart_setup();
 	
-	uint8_t* rgbData = 0;
-	uint16_t rgbDataLen = 0;
-	ws2811_get_buffer(&rgbData, &rgbDataLen);
-	
+	const uint16_t rgbDataLen = WS2811_NLEDS*3;
+	uint8_t rgbData[rgbDataLen];
+	uint8_t rgbDataManual[rgbDataLen];
+
+	for(int i = 0; i < rgbDataLen; i++)
+		rgbData[i] = 0;
+	for(int i = 0; i < rgbDataLen; i++)
+		rgbDataManual[i] = 0;
+
 	const int usartDataLen = 256+1;
 	char usartData[usartDataLen];
 	
@@ -105,21 +110,23 @@ int main(void)
 					usart_write(usartData);
 					break;
 				case 'm': // [m]anual led set
+					animSel = -1;
 					sscanf(usartData+1, "%02x", &sel);
 					if(sel < (rgbDataLen/3))
-						sscanf(usartData+3, "%02hhx%02hhx%02hhx", rgbData+3*sel, rgbData+3*sel+1, rgbData+3*sel+2);
+						sscanf(usartData+3, "%02hhx%02hhx%02hhx", rgbDataManual+3*sel, rgbDataManual+3*sel+1, rgbDataManual+3*sel+2);
 					usartData[0] = 'M';
 					for(int i = 0; i < rgbDataLen; i++)
-						sprintf(usartData+1+i*2, "%02x", rgbData[i]);
+						sprintf(usartData+1+i*2, "%02x", rgbDataManual[i]);
 					usart_write(usartData);
 					break;
 				case 'r': // [r]ead complete led matrix
 					usartData[0] = 'R';
 					for(int i = 0; i < rgbDataLen; i++)
-						sprintf(usartData+1+i*2, "%02x", rgbData[i]);
+						sprintf(usartData+1+i*2, "%02x", rgbDataManual[i]);
 					usart_write(usartData);
 					break;
 				case 'w': // [w]rite complete led matrix
+					animSel = -1;
 					if(len != (1+2*rgbDataLen)) // 1 char command, 6 chars per LED
 					{
 						usart_write("?");
@@ -127,7 +134,7 @@ int main(void)
 					else
 					{
 						for(int i = 0; i < (rgbDataLen/3); i++)
-							sscanf(usartData+1+6*i, "%02hhx%02hhx%02hhx", rgbData+3*i, rgbData+3*i+1, rgbData+3*i+2);
+							sscanf(usartData+1+6*i, "%02hhx%02hhx%02hhx", rgbDataManual+3*i, rgbDataManual+3*i+1, rgbDataManual+3*i+2);
 						usart_write("W");
 					}
 					break;
@@ -145,7 +152,10 @@ int main(void)
 		// wait if frame time has not yet passed
 		tmr_wait();
 		// trigger display update
-		ws2811_update();
+		if(animSel < 0)
+			ws2811_update(rgbDataManual);
+		else
+			ws2811_update(rgbData);
 	}
 
 	return 0;

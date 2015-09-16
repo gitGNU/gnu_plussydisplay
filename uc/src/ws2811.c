@@ -24,8 +24,6 @@
 
 #include "ws2811.h"
 
-#define WS2811_NLEDS 20
-
 // prescaler /1: 2.5us period
 #define WS2811_PERIOD 210
 #define WS2811_T0H 42
@@ -35,11 +33,10 @@
 // => total time: ~1.3ms
 
 uint16_t pwmData[PWM_DATA_LEN];
-uint8_t rgbData[WS2811_NLEDS*3];
 
 static volatile uint8_t done = 1;
 
-static void rgb2pwm(void)
+static void rgb2pwm(uint8_t* rgbData)
 {
 	for(int i = 0; i < 20*3; i++)
 	{
@@ -59,8 +56,6 @@ void ws2811_setup(void)
 {
 	for(int i = 0; i < PWM_DATA_LEN; i++)
 		pwmData[i] = 0;
-	for(int i = 0; i < WS2811_NLEDS*3; i++)
-		rgbData[i] = 0;
 	
 	// setup tim3 ch1 gpio
 	rcc_periph_clock_enable(RCC_GPIOB);
@@ -107,12 +102,12 @@ uint8_t ws2811_ready(void)
 	return done;
 }
 
-void ws2811_update(void)
+void ws2811_update(uint8_t* rgbData)
 {
 	if(ws2811_ready())
 	{
 		// convert data
-		rgb2pwm();
+		rgb2pwm(rgbData);
 		// start output
 		done = 0;
 		DMA1_S4CR |= DMA_SxCR_EN; // DMA enable
@@ -121,8 +116,3 @@ void ws2811_update(void)
 	}
 }
 
-void ws2811_get_buffer(uint8_t** buf, uint16_t* bufSize)
-{
-	*buf = rgbData;
-	*bufSize = sizeof(rgbData);
-}

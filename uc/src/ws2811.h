@@ -21,10 +21,10 @@
 
 #include <stdint.h>
 
-void ws2811_setup(void);
-void ws2811_update(void);
-uint8_t ws2811_ready(void);
+#define WS2811_NLEDS 20
 
-void ws2811_get_buffer(uint8_t** buf, uint16_t* bufSize);
+void ws2811_setup(void);
+void ws2811_update(uint8_t* rgbData); // buf length: WS2811_NLEDS*3
+uint8_t ws2811_ready(void);
 
 #endif
