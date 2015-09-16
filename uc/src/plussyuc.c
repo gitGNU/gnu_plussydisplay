@@ -108,7 +108,16 @@ int main(void)
 					sscanf(usartData+1, "%02x", &sel);
 					if(sel < (rgbDataLen/3))
 						sscanf(usartData+3, "%02hhx%02hhx%02hhx", rgbData+3*sel, rgbData+3*sel+1, rgbData+3*sel+2);
-					usart_write("M");
+					usartData[0] = 'M';
+					for(int i = 0; i < rgbDataLen; i++)
+						sprintf(usartData+1+i*2, "%02x", rgbData[i]);
+					usart_write(usartData);
+					break;
+				case 'r': // [r]ead complete led matrix
+					usartData[0] = 'R';
+					for(int i = 0; i < rgbDataLen; i++)
+						sprintf(usartData+1+i*2, "%02x", rgbData[i]);
+					usart_write(usartData);
 					break;
 				case 'w': // [w]rite complete led matrix
 					if(len != (1+2*rgbDataLen)) // 1 char command, 6 chars per LED
