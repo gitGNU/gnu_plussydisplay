@@ -24,6 +24,7 @@ import threading
 import time
 import queue
 import xmlrpc.client
+import serial
 
 ########################################################################
 # Discovery Broadcast
@@ -60,12 +61,17 @@ class HardwareRequest():
 requestQueue = queue.Queue() # thread-safe queue
 
 class HardwareThread(threading.Thread):
-	def __init__(self):
+	def __init__(self, serialPort):
 		super().__init__()
 		self.contRun = True
+		
+		self.s = None
+		if serialPort != None:
+			self.s = serial.Serial(serialPort, 115200, timeout=2)
 	
 	def run(self):
-		sim = xmlrpc.client.ServerProxy("http://localhost:8000") # Debug only!
+		if self.s == None:
+			sim = xmlrpc.client.ServerProxy("http://localhost:8000") # Debug only!
 		lastM = None
 		while self.contRun:
 			try:
@@ -75,7 +81,24 @@ class HardwareThread(threading.Thread):
 					req.replyQueue.put("R"+lastM[1:])
 				else: # hardware query
 					print("hw: " + req.command)
-					ans = sim.cmd(req.command) # Debug: Send to simulation program
+					
+					if self.s == None:
+						# Debug: Send to simulation program
+						ans = sim.cmd(req.command)
+					else:
+						# real hardware: use serial protocol
+						self.s.write( ("!%02x%s;" % (len(req.command), req.command)).encode() )
+						self.s.flush()
+						tmp = ""
+						while tmp != "@":
+							tmp = self.s.read(1).decode()
+							if tmp == "":
+								raise Exception("timeout")
+						l = int(self.s.read(2).decode(),16)
+						ans = self.s.read(l).decode()
+						e = self.s.read(1).decode()
+						if e != ";":
+							raise Exception("invalid end of response")
 					
 					if ans[0] == "M": # store answer for quick replies if command was 'm'
 						lastM = ans
@@ -83,6 +106,10 @@ class HardwareThread(threading.Thread):
 				
 			except queue.Empty:
 				pass
+			except serial.SerialException as e:
+				print(e)
+			except Exception as e:
+				print(e)
 		
 	def stop(self):
 		self.contRun = False
@@ -122,19 +149,25 @@ class ThreadedTCPServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
 if __name__ == "__main__":
 
 	if len(sys.argv) < 2:
-		print("usage: server.py INTERFACE")
-		print("example: server.py 192.168.0.1")
+		print("usage: server.py INTERFACE [SERIAL]")
+		print("example (simulation): server.py 192.168.0.1")
+		print("example (hardware): server.py 192.168.0.1 /dev/ttyO1")
 		sys.exit(1)
 
 	# get interface ip
 	interface = sys.argv[1]
+	
+	# get serial
+	serialPort = None
+	if len(sys.argv) > 2:
+		serialPort = sys.argv[2]
 	
 	# start broadcast thread
 	bt = BroadcastThread(interface)
 	bt.start()
 	
 	# start hardware thread
-	hwt = HardwareThread()
+	hwt = HardwareThread(serialPort)
 	hwt.start()
 	
 	# start tcp server
