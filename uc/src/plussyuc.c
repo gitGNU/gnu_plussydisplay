@@ -34,10 +34,22 @@ static void gpio_setup(void)
 	gpio_mode_setup(GPIOA, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, GPIO5);
 }
 
+static void btn_setup(void)
+{
+	rcc_periph_clock_enable(RCC_GPIOC);
+	gpio_mode_setup(GPIOC, GPIO_MODE_INPUT, GPIO_PUPD_NONE, GPIO13);
+}
+
+static uint8_t btn_pressed(void)
+{
+	return (GPIOC_IDR & (1<<13)) ? 0 : 1;
+}
+
 int main(void)
 {
 	rcc_clock_setup_hse_3v3(&hse_12mhz_3v3[CLOCK_3V3_84MHZ]);
 	gpio_setup();
+	btn_setup();
 	tmr_setup();
 	ws2811_setup();
 	usart_setup();
@@ -62,6 +74,7 @@ int main(void)
 
 	uint16_t compTime = 0;
 	int debugCnt = 0;
+	uint8_t btnLastPressed = 0;
 
 	while (1)
 	{
@@ -142,6 +155,18 @@ int main(void)
 					usart_write("?");
 				}
 			}
+		}
+		else if(!btnLastPressed && btn_pressed())
+		{
+			if(animSel == animSelMax)
+				animSel = -1;
+			else
+				animSel++;
+			btnLastPressed = 1;
+		}
+		else if(!btn_pressed())
+		{
+			btnLastPressed = 0;
 		}
 		
 		// calculate next frame
