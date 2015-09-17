@@ -1,0 +1,18 @@
+<VirtualHost *:80>
+	ServerAdmin webmaster@localhost
+
+	DocumentRoot /var/www
+	<Directory /var/www/>
+		Options ExecCGI
+		AllowOverride None
+		Order allow,deny
+		allow from all
+
+		AddHandler cgi-script .py
+		DirectoryIndex server_web.py
+	</Directory>
+
+	ErrorLog ${APACHE_LOG_DIR}/apache-error.log
+	LogLevel warn
+	CustomLog ${APACHE_LOG_DIR}/apache-access.log combined
+</VirtualHost>

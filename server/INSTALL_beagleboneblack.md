@@ -36,8 +36,9 @@ Log of all steps performed:
 	* enhance bashrc (see bash.bashrc)
 * apache
 	* /etc/apache2/envvars: move log dir to /var/log (no subdir)
-	* mv default site to available
-	* edit port 80 site (see below)
+	* mv default site on 8080 to available (which disables it)
+	* add new default site ("default" file, see below)
+	* enable new default site with symlink
 * bind
 	* `apt-get install bind9`
 	* copy zone files, register fsfe zone (see files below)
@@ -50,3 +51,4 @@ Files:
 * `/etc/bash.bashrc`
 * `/etc/fstab`
 * `/etc/bind/{db.4.168.192,db.fsfe,named.conf.local}`
+* `/etc/apache2/sites-available/default`
