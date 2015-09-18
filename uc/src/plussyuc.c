@@ -126,7 +126,13 @@ int main(void)
 					animSel = -1;
 					sscanf(usartData+1, "%02x", &sel);
 					if(sel < (rgbDataLen/3))
-						sscanf(usartData+3, "%02hhx%02hhx%02hhx", rgbDataManual+3*sel, rgbDataManual+3*sel+1, rgbDataManual+3*sel+2);
+					{
+						int r,g,b;
+						sscanf(usartData+3, "%02x%02x%02x", &r, &g, &b);
+						rgbDataManual[3*sel] = r;
+						rgbDataManual[3*sel+1] = g;
+						rgbDataManual[3*sel+2] = b;
+					}
 					usartData[0] = 'M';
 					for(int i = 0; i < rgbDataLen; i++)
 						sprintf(usartData+1+i*2, "%02x", rgbDataManual[i]);
@@ -147,7 +153,13 @@ int main(void)
 					else
 					{
 						for(int i = 0; i < (rgbDataLen/3); i++)
-							sscanf(usartData+1+6*i, "%02hhx%02hhx%02hhx", rgbDataManual+3*i, rgbDataManual+3*i+1, rgbDataManual+3*i+2);
+						{
+							int r,g,b;
+							sscanf(usartData+3, "%02x%02x%02x", &r, &g, &b);
+							rgbDataManual[3*sel] = r;
+							rgbDataManual[3*sel+1] = g;
+							rgbDataManual[3*sel+2] = b;
+						}
 						usart_write("W");
 					}
 					break;
