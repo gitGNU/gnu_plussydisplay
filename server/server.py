@@ -80,7 +80,7 @@ class HardwareThread(threading.Thread):
 				if (req.command[0] == "r") and (lastM != None): # quick reply for read command if we know the state
 					req.replyQueue.put("R"+lastM[1:])
 				else: # hardware query
-					print("hw: " + req.command)
+					#print("hw: " + req.command)
 					
 					if self.s == None:
 						# Debug: Send to simulation program
@@ -130,7 +130,7 @@ class PlussyTCPHandler(socketserver.StreamRequestHandler):
 			req = self.rfile.readline().decode().strip() # get one line from socket
 			if len(req) == 0: # socket has probably been closed
 				break
-			print(label + "got request", "\"" + req + "\"")
+			#print(label + "got request", "\"" + req + "\"")
 			
 			requestQueue.put(HardwareRequest(req, q)) # send request to hardware thread
 			resp = q.get(timeout=1) # get reply from reply queue
