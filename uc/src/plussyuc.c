@@ -23,6 +23,7 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "hwversion.h"
 #include "ws2811.h"
 #include "util.h"
 #include "usart.h"
@@ -49,14 +50,20 @@ int main(void)
 {
 	rcc_clock_setup_hse_3v3(&hse_12mhz_3v3[CLOCK_3V3_84MHZ]);
 	gpio_setup();
+	hwversion_setup();
 	btn_setup();
 	tmr_setup();
 	ws2811_setup();
 	usart_setup();
 	
 	const uint16_t rgbDataLen = WS2811_NLEDS*3;
+
+	// data before mapping, first non-pcb variant
 	uint8_t rgbData[rgbDataLen];
 	uint8_t rgbDataManual[rgbDataLen];
+
+	// data mapped to device version
+	uint8_t rgbDataDev[rgbDataLen];
 
 	for(int i = 0; i < rgbDataLen; i++)
 		rgbData[i] = 0;
@@ -72,6 +79,23 @@ int main(void)
 	while(animTable[animSelMax+1].name) // find end of table
 		animSelMax++;
 
+	// detect hardware version
+	tmr_delay_us(10000);
+	tmr_wait();
+	uint8_t hwver = hwversion_detect();
+	void (*hwmap)(uint8_t*, uint8_t*) = 0; // args: src,dest
+	
+	switch(hwver)
+	{
+	case 0: // inital version, LEDs connected with wires
+		break;
+	case 1: // rev1 is PCB labeled "LED Matrix / Plussy v0"
+		hwmap = hwversion_remap_rev1;
+	default: // unknown revision, assume no mapping
+		break;
+	}
+	
+	// main loop
 	uint16_t compTime = 0;
 	int debugCnt = 0;
 	uint8_t btnLastPressed = 0;
@@ -184,16 +208,19 @@ int main(void)
 		// calculate next frame
 		if(animSel >= 0)
 			animTable[animSel].func(rgbData, rgbDataLen);
+		// remap data
+		if(animSel < 0)
+			hwmap(rgbDataManual, rgbDataDev);
+		else
+			hwmap(rgbData, rgbDataDev);
 		// determine how much time has passed
 		compTime = tmr_get_status(); // TODO: ouput to serial port?
 		// wait if frame time has not yet passed
 		tmr_wait();
 		// trigger display update
-		if(animSel < 0)
-			ws2811_update(rgbDataManual);
-		else
-			ws2811_update(rgbData);
+		ws2811_update(rgbDataDev);
 	}
 
 	return 0;
 }
+
