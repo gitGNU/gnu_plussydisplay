@@ -38,7 +38,7 @@ static void gpio_setup(void)
 static void btn_setup(void)
 {
 	rcc_periph_clock_enable(RCC_GPIOC);
-	gpio_mode_setup(GPIOC, GPIO_MODE_INPUT, GPIO_PUPD_NONE, GPIO13);
+	gpio_mode_setup(GPIOC, GPIO_MODE_INPUT, GPIO_PUPD_PULLUP, GPIO13);
 }
 
 static uint8_t btn_pressed(void)
@@ -65,6 +65,7 @@ int main(void)
 	// data mapped to device version
 	uint8_t rgbDataDev[rgbDataLen];
 
+	// initialize data
 	for(int i = 0; i < rgbDataLen; i++)
 		rgbData[i] = 0;
 	for(int i = 0; i < rgbDataLen; i++)
@@ -73,6 +74,7 @@ int main(void)
 	const int usartDataLen = 256+1;
 	char usartData[usartDataLen];
 	
+	// animation table
 	int animSel = -1;
 	int animSelMax = -1;
 
@@ -91,6 +93,7 @@ int main(void)
 		break;
 	case 1: // rev1 is PCB labeled "LED Matrix / Plussy v0"
 		hwmap = hwversion_remap_rev1;
+		break;
 	default: // unknown revision, assume no mapping
 		break;
 	}
