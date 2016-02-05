@@ -47,6 +47,7 @@ struct anim_t
 // (1) add your declaration here:
 void anim_test(uint8_t* data, uint16_t len);
 void anim_green(uint8_t* data, uint16_t len);
+void anim_constgreen(uint8_t* data, uint16_t len);
 
 #ifdef PLUSSYUC_C_
 
@@ -54,6 +55,7 @@ void anim_green(uint8_t* data, uint16_t len);
 struct anim_t animTable[] = {
 	{ "Test Animation", &anim_test },
 	{ "Green", &anim_green },
+	{ "Constant Green", &anim_constgreen },
 	{ 0, 0 } // end-of-table flag
 };
 
