@@ -2,7 +2,7 @@
 ; BIND data file for local loopback interface
 ;
 $TTL	604800
-@	IN	SOA	fsfe. root.fsfe. (
+@	IN	SOA	fellowship-franken.org. root.fellowship-franken.org. (
 			      2		; Serial
 			 604800		; Refresh
 			  86400		; Retry

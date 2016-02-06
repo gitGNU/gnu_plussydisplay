@@ -2,14 +2,14 @@
 ; BIND reverse data file for local loopback interface
 ;
 $TTL	604800
-@	IN	SOA	bbb.fsfe. root.fsfe. (
-			      1		; Serial
+@	IN	SOA	bbb.fellowship-franken.org. root.fellowship-franken.org. (
+			      2		; Serial
 			 604800		; Refresh
 			  86400		; Retry
 			2419200		; Expire
 			 604800 )	; Negative Cache TTL
 ;
 
-	IN	NS	bbb.fsfe.
-1	IN	PTR	bbb.fsfe.
+	IN	NS	bbb.fellowship-franken.org.
+1	IN	PTR	bbb.fellowship-franken.org.
 

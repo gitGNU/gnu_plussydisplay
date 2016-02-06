@@ -1,7 +1,10 @@
 
 # Installation on BeagleBoneBlack
 
+Note: This script has been updated for Debian jessie based images; particularly these: http://elinux.org/Beagleboard:BeagleBoneBlack_Debian#Debian_Image_Testing_Snapshots
+
 Log of all steps performed:
+* remove `contrib` and `non-free` flags in `/etc/apt/sources.list` (use free software only)
 * `apt-get update` and `apt-get upgrade`
 * disable graphical interface: `update-rc.d -f lightdm remove`
 * disable network service: `update-rc.d -f wicd remove`
@@ -21,6 +24,7 @@ Log of all steps performed:
 	* `mv cloud9.service cloud9.service.disabled`
 	* `mv cloud9.socket cloud9.socket.disabled`
 * hostapd
+	* install: `apt-get install hostapd  iw iwconfig wpa-supplicant`
 	* add config `/etc/hostapd/hostapd.conf`
 	* register config in `/etc/default/hostapd`
 	* setup wlan0 in `/etc/network/interfaces`
@@ -29,6 +33,10 @@ Log of all steps performed:
 	* add post-up call to udhcpd
 * set root password, set debian user password
 * install python3: `apt-get install python3 python3-serial`
+* install plussy server script:
+	* copy to /usr/local/sbin
+	* create user: `adduser --system --home /tmp --shell /bin/bash --no-create-home --disabled-login --ingroup dialout plussy`
+	* register with systemd (copy script to `/etc/systemd/system/`)
 * read-only rootfs:
 	* add "ro" to to /boot/uboot/uEnv.txt (mmcargs)
 	* add "ro" to "/" and "/boot/uboot" in /etc/fstab
@@ -42,7 +50,7 @@ Log of all steps performed:
 * bind
 	* `apt-get install bind9`
 	* copy zone files, register fsfe zone (see files below)
-* configure USART1 (/dev/ttyO1): add `optargs=capemgr.enable_partno=BB-UART1` to /boot/uboot/uEnv.txt
+* configure USART1 (/dev/ttyO1): add `cape_enable=capemgr.enable_partno=BB-UART1` to /boot/uEnv.txt
 
 Files:
 * `/etc/hostapd/hostapd.conf`
@@ -50,5 +58,8 @@ Files:
 * `/etc/network/interfaces`
 * `/etc/bash.bashrc`
 * `/etc/fstab`
-* `/etc/bind/{db.4.168.192,db.fsfe,named.conf.local}`
 * `/etc/apache2/sites-available/default`
+* `/etc/bind/{db.4.168.192,db.fsfe,named.conf.local}`
+* `/etc/init.d/plussy-server`
+* `/usr/local/sbin/server.py`
+* `/var/www/server_web.py`

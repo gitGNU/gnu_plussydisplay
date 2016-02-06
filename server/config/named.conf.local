@@ -6,7 +6,7 @@
 // organization
 //include "/etc/bind/zones.rfc1918";
 
-zone "fsfe" {
+zone "fellowship-franken.org" {
         type master;
         file "/etc/bind/db.fsfe";
 	notify no;
