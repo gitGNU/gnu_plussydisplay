@@ -60,6 +60,6 @@ Files:
 * `/etc/fstab`
 * `/etc/apache2/sites-available/default`
 * `/etc/bind/{db.4.168.192,db.fsfe,named.conf.local}`
-* `/etc/init.d/plussy-server`
+* `/etc/systemd/system/plussy-server.service`
 * `/usr/local/sbin/server.py`
 * `/var/www/server_web.py`

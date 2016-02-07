@@ -1,0 +1,11 @@
+[Unit]
+Description=Plussy Server
+After=network.target
+
+[Service]
+ExecStart=/usr/local/sbin/server.py 192.168.4.1 /dev/ttyO1
+User=plussy
+
+[Install]
+WantedBy=multi-user.target
+
