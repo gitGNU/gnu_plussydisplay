@@ -45,13 +45,13 @@ void hwversion_remap_rev1(uint8_t* rgbDataSrc, uint8_t* rgbDataDest)
 	for(uint8_t i = 0; i < WS2811_NLEDS; i++)
 	{
 		if(i<2)
-			copy_buf(rgbDataSrc, i, rgbDataDest, 1-i);
+			copy_buf(rgbDataSrc, i, rgbDataDest, WS2811_NLEDS-1-(1-i));
 		else if((i>3)&&(i<10))
-			copy_buf(rgbDataSrc, i, rgbDataDest, 10-i+3);
+			copy_buf(rgbDataSrc, i, rgbDataDest, WS2811_NLEDS-1-(10-i+3));
 		else if((i>15)&&(i<18))
-			copy_buf(rgbDataSrc, i, rgbDataDest, 18-i+15);
+			copy_buf(rgbDataSrc, i, rgbDataDest, WS2811_NLEDS-1-(18-i+15));
 		else
-			copy_buf(rgbDataSrc, i, rgbDataDest, i);
+			copy_buf(rgbDataSrc, i, rgbDataDest, WS2811_NLEDS-1-(i));
 	}
 }
 
