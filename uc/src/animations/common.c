@@ -84,3 +84,10 @@ uint8_t sin4(uint8_t x)
 {
 	return sinTable[x];
 }
+
+void bscale(uint8_t* rgb, uint8_t scale)
+{
+	rgb[0] = ((uint16_t)rgb[0]*scale)/0xff;
+	rgb[1] = ((uint16_t)rgb[1]*scale)/0xff;
+	rgb[2] = ((uint16_t)rgb[2]*scale)/0xff;
+}

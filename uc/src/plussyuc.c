@@ -74,6 +74,9 @@ int main(void)
 	const int usartDataLen = 256+1;
 	char usartData[usartDataLen];
 	
+	// options
+	uint8_t brightnessScale = 0xff;
+
 	// animation table
 	int animSel = -1;
 	int animSelMax = -1;
@@ -127,6 +130,11 @@ int main(void)
 				case 'e': // [e]cho test
 					sprintf(usartData, "E%d", debugCnt++);
 					usart_write(usartData);
+					break;
+				case 'b': // [b]rightness scale setting
+					sscanf(usartData+1, "%02x", &sel);
+					brightnessScale = (uint8_t)sel;
+					usart_write("B");
 					break;
 				case 'c': // [c]omputation time
 					sprintf(usartData, "C%d", compTime);
@@ -216,6 +224,9 @@ int main(void)
 			hwmap(rgbDataManual, rgbDataDev);
 		else
 			hwmap(rgbData, rgbDataDev);
+		// scale brightness
+		for(uint8_t i = 0; i < WS2811_NLEDS; i++)
+			bscale(rgbDataDev+3*i, brightnessScale);
 		// determine how much time has passed
 		compTime = tmr_get_status(); // TODO: ouput to serial port?
 		// wait if frame time has not yet passed

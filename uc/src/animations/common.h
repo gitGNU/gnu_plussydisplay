@@ -32,6 +32,8 @@ void hsv2rgb_f(uint8_t* rgb, float h, float s, float v); // true HSV with floats
 // LUT-based functions
 uint8_t sin4(uint8_t x); // 1/4 of sine function ( = floor(sin(0:pi/2/255:pi/2)*255) in GNU octave )
 
+// brightness
+void bscale(uint8_t* rgb, uint8_t scale); // scale brightness (scale = 0xff is factor 1.0)
 
 //#############################################################################
 //# Animation Definitions
