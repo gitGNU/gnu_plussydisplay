@@ -47,10 +47,15 @@ Log of all steps performed:
 	* mv default site on 8080 to available (which disables it)
 	* add new default site ("default" file, see below)
 	* enable new default site with symlink
+	* enable cgi with `a2enmod cgi`
 * bind
 	* `apt-get install bind9`
 	* copy zone files, register fsfe zone (see files below)
-* configure USART1 (/dev/ttyO1): add `cape_enable=capemgr.enable_partno=BB-UART1` to /boot/uEnv.txt
+* using UART different than UART1
+	* install capemgr stuff according to `https://github.com/beagleboard/bb.org-overlays`
+	* disable HDMI in /boot/uEnv.txt (uncomment `dtb=am335x-boneblack-emmc-overlay.dtb`)
+	* enable UART5 with `cape_enable=bone_capemgr.enable_partno=BB-UART5`
+	* change port to ttyO5 in `/etc/systemd/system/plussy-server.service`
 
 Files:
 * `/etc/hostapd/hostapd.conf`
