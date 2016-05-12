@@ -13,8 +13,8 @@
    height="354.33069"
    id="svg2"
    version="1.1"
-   inkscape:version="0.48.4 r9939"
-   sodipodi:docname="bottom_plate_laser.svg"
+   inkscape:version="0.48.5 r10040"
+   sodipodi:docname="bottom_plate.svg"
    inkscape:export-filename="/home/cc/daten/Projekte/fsfe/fellowship_display.png"
    inkscape:export-xdpi="260.10001"
    inkscape:export-ydpi="260.10001">
@@ -28,15 +28,15 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.98994949"
-     inkscape:cx="266.18133"
+     inkscape:cx="104.55692"
      inkscape:cy="155.40872"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="true"
      units="mm"
-     inkscape:window-width="1317"
-     inkscape:window-height="744"
-     inkscape:window-x="49"
+     inkscape:window-width="1366"
+     inkscape:window-height="720"
+     inkscape:window-x="0"
      inkscape:window-y="24"
      inkscape:window-maximized="1"
      inkscape:snap-bbox="true"
@@ -66,7 +66,24 @@
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
         <dc:title></dc:title>
+        <cc:license
+           rdf:resource="http://creativecommons.org/licenses/by-sa/3.0/" />
       </cc:Work>
+      <cc:License
+         rdf:about="http://creativecommons.org/licenses/by-sa/3.0/">
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Reproduction" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Distribution" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#Notice" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#Attribution" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#ShareAlike" />
+      </cc:License>
     </rdf:RDF>
   </metadata>
   <g
@@ -124,7 +141,7 @@
        transform="translate(334.84252,1032.874)" />
     <path
        transform="translate(86.62261,777.86837)"
-       d="m 10.629921,5.3149405 a 5.3149605,5.3149605 0 1 1 -10.629921,0 5.3149605,5.3149605 0 1 1 10.629921,0 z"
+       d="m 10.629921,5.3149405 c 0,2.9353716 -2.3795889,5.3149605 -5.3149605,5.3149605 C 2.3795889,10.629901 0,8.2503121 0,5.3149405 0,2.3795688 2.3795889,-2.0027161e-5 5.3149605,-2.0027161e-5 c 2.9353716,0 5.3149605,2.379588827161 5.3149605,5.314960527161 z"
        sodipodi:ry="5.3149605"
        sodipodi:rx="5.3149605"
        sodipodi:cy="5.3149405"
@@ -134,7 +151,7 @@
        sodipodi:type="arc" />
     <path
        transform="translate(203.55175,962.12034)"
-       d="m 10.629921,5.3149405 a 5.3149605,5.3149605 0 1 1 -10.629921,0 5.3149605,5.3149605 0 1 1 10.629921,0 z"
+       d="m 10.629921,5.3149405 c 0,2.9353716 -2.3795889,5.3149605 -5.3149605,5.3149605 C 2.3795889,10.629901 0,8.2503121 0,5.3149405 0,2.3795688 2.3795889,-2.0027161e-5 5.3149605,-2.0027161e-5 c 2.9353716,0 5.3149605,2.379588827161 5.3149605,5.314960527161 z"
        sodipodi:ry="5.3149605"
        sodipodi:rx="5.3149605"
        sodipodi:cy="5.3149405"
