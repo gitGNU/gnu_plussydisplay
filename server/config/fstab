@@ -1,3 +1,8 @@
+# Copying and distribution of this file, with or without modification,
+# are permitted in any medium without royalty provided the copyright
+# notice and this notice are preserved.  This file is offered as-is,
+# without any warranty.
+
 # /etc/fstab: static file system information.
 #
 UUID=5468fd36-556d-4e58-974c-e5d350584944  /  ext4  noatime,ro,errors=remount-ro  0  1
