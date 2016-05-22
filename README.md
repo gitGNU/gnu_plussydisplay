@@ -1,6 +1,29 @@
-# Plussy Display
+
+# Plussy Display Introduction
 
 This repository contains free software and hardware design components for a small LED matrix resembling FSFE's plussy mascot. It is intended to be used, e.g., as an eyecatcher for fellowship events.
+
+## License Information
+
+All files in this project (except some configuration files where stated in their header) are licensed under the GPLv3 license as stated in the next section (GPLv3 License Statement).
+
+## GPLv3 License Statement
+
+Plussy Display
+Copyright (C) 2015  Christian Carlowitz <chca@cmesh.de>
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 # Usage
 ## Adding new animations

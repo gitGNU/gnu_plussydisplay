@@ -1,4 +1,5 @@
 EESchema Schematic File Version 2
+LIBS:ws2812display-rescue
 LIBS:power
 LIBS:device
 LIBS:transistors
@@ -45,12 +46,12 @@ EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
 Sheet 1 2
-Title ""
+Title "Plussy Display"
 Date ""
 Rev ""
 Comp ""
-Comment1 ""
-Comment2 ""
+Comment1 "http://www.gnu.org/licenses/gpl-3.0.txt"
+Comment2 "LICENSE: GNU GPLv3"
 Comment3 ""
 Comment4 ""
 $EndDescr

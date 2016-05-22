@@ -1,4 +1,4 @@
-(kicad_pcb (version 4) (host pcbnew 4.0.0-2.201511301920+6191~38~ubuntu14.04.1-stable)
+(kicad_pcb (version 4) (host pcbnew 4.0.2+e4-6225~38~ubuntu14.04.1-stable)
 
   (general
     (links 559)
@@ -13,6 +13,12 @@
   )
 
   (page A4)
+  (title_block
+    (title "Plussy Display PCB layout")
+    (comment 1 http://www.gnu.org/licenses/gpl-3.0.txt)
+    (comment 2 "LICENSE: GNU GPLv3")
+  )
+
   (layers
     (0 F.Cu signal hide)
     (31 B.Cu signal hide)
