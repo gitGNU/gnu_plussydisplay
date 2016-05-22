@@ -6,3 +6,5 @@
 *.so
 .metadata
 RemoteSystemsTempFiles
+*.bak
+*.kicad_pcb-bak
