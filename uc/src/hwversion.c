@@ -55,4 +55,9 @@ void hwversion_remap_rev1(uint8_t* rgbDataSrc, uint8_t* rgbDataDest)
 	}
 }
 
+void hwversion_remap_none(uint8_t* rgbDataSrc, uint8_t* rgbDataDest)
+{
+	for(uint8_t i = 0; i < WS2811_NLEDS; i++)
+		copy_buf(rgbDataSrc, i, rgbDataDest, i);
+}
 

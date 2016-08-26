@@ -88,7 +88,7 @@ int main(void)
 	tmr_delay_us(10000);
 	tmr_wait();
 	uint8_t hwver = hwversion_detect();
-	void (*hwmap)(uint8_t*, uint8_t*) = 0; // args: src,dest
+	void (*hwmap)(uint8_t*, uint8_t*) = hwversion_remap_none; // args: src,dest
 	
 	switch(hwver)
 	{
