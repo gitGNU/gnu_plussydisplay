@@ -48,7 +48,7 @@ static uint8_t btn_pressed(void)
 
 int main(void)
 {
-	rcc_clock_setup_hse_3v3(&hse_12mhz_3v3[CLOCK_3V3_84MHZ]);
+	rcc_clock_setup_hse_3v3(&rcc_hse_12mhz_3v3[RCC_CLOCK_3V3_84MHZ]);
 	gpio_setup();
 	hwversion_setup();
 	btn_setup();
