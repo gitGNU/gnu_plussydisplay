@@ -25,9 +25,9 @@
 #include "ws2811.h"
 
 // prescaler /1: 2.5us period
-#define WS2811_PERIOD 210
-#define WS2811_T0H 42
-#define WS2811_T1H 100
+#define WS2811_PERIOD 105
+#define WS2811_T0H 21
+#define WS2811_T1H 50
 
 #define PWM_DATA_LEN (8*3*WS2811_NLEDS+50)
 // => total time: ~1.3ms
@@ -64,7 +64,7 @@ void ws2811_setup(void)
 	
 	// setup timer
 	rcc_periph_clock_enable(RCC_TIM3);
-	TIM3_PSC = 0; // no prescaler, 84 MHz counter
+	TIM3_PSC = 0; // no prescaler, 42 MHz counter
 	TIM3_ARR = WS2811_PERIOD; // counter period
 	TIM3_CCMR1 = TIM_CCMR1_OC1M_PWM1 | TIM_CCMR1_OC1PE; // ch1 pwm mode, preload enabled
 	TIM3_CCR1 = WS2811_T0H; // initial duty cycle

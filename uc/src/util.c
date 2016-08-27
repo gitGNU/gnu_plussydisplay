@@ -36,8 +36,8 @@ void tmr_setup(void)
 	nvic_enable_irq(NVIC_TIM4_IRQ);
 }
 
-#define TMR_PSC_US 84-1
-#define TMR_PSC_MS 42000-1
+#define TMR_PSC_US 42-1
+#define TMR_PSC_MS 21000-1
 
 void tmr_delay_us(uint16_t delay) // max. (2^16-1) = 65535 us
 {
