@@ -97,8 +97,11 @@ int main(void)
 	case 1: // rev1 is PCB labeled "LED Matrix / Plussy v0"
 		hwmap = hwversion_remap_rev1;
 		break;
-	case 2: // rev2 is PCB labeled "Plussy v2 Summit Edition", LED mapping is equal to rev1
+	case 2: // rev2 is PCB labeled "Plussy v2 Summit Edition" with 8mm WS2811 LEDs
 		hwmap = hwversion_remap_rev1;
+		break;
+	case 3: // rev3 is PCB labeled "Plussy v2 Summit Edition" with WS2812B SMD LEDs
+		hwmap = hwversion_remap_rev2_ws2812b;
 		break;
 	default: // unknown revision, assume no mapping
 		break;

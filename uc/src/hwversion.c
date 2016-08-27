@@ -40,6 +40,13 @@ static void copy_buf(uint8_t* rgbDataSrc, uint8_t srci, uint8_t* rgbDataDest, ui
 	rgbDataDest[3*desti+2] = rgbDataSrc[3*srci+2];
 }
 
+static void copy_buf_swapRG(uint8_t* rgbDataSrc, uint8_t srci, uint8_t* rgbDataDest, uint8_t desti)
+{
+	rgbDataDest[3*desti] = rgbDataSrc[3*srci+1];
+	rgbDataDest[3*desti+1] = rgbDataSrc[3*srci];
+	rgbDataDest[3*desti+2] = rgbDataSrc[3*srci+2];
+}
+
 void hwversion_remap_rev1(uint8_t* rgbDataSrc, uint8_t* rgbDataDest)
 {
 	for(uint8_t i = 0; i < WS2811_NLEDS; i++)
@@ -52,6 +59,21 @@ void hwversion_remap_rev1(uint8_t* rgbDataSrc, uint8_t* rgbDataDest)
 			copy_buf(rgbDataSrc, i, rgbDataDest, WS2811_NLEDS-1-(18-i+15));
 		else
 			copy_buf(rgbDataSrc, i, rgbDataDest, WS2811_NLEDS-1-(i));
+	}
+}
+
+void hwversion_remap_rev2_ws2812b(uint8_t* rgbDataSrc, uint8_t* rgbDataDest)
+{
+	for(uint8_t i = 0; i < WS2811_NLEDS; i++)
+	{
+		if(i<2)
+			copy_buf_swapRG(rgbDataSrc, i, rgbDataDest, WS2811_NLEDS-1-(1-i));
+		else if((i>3)&&(i<10))
+			copy_buf_swapRG(rgbDataSrc, i, rgbDataDest, WS2811_NLEDS-1-(10-i+3));
+		else if((i>15)&&(i<18))
+			copy_buf_swapRG(rgbDataSrc, i, rgbDataDest, WS2811_NLEDS-1-(18-i+15));
+		else
+			copy_buf_swapRG(rgbDataSrc, i, rgbDataDest, WS2811_NLEDS-1-(i));
 	}
 }
 
