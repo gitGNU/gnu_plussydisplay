@@ -51,22 +51,25 @@ html = \
 """
 <html>
 <head>
+<link rel="stylesheet" href="pure-min.css"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
 <style>
 	h1 { font-family: Arial, Helvetica, sans-serif; front-size: 30px; }
 	p { font-family: Arial, Helvetica, sans-serif; font-size: 20px; }
 	li { font-family: Arial, Helvetica, sans-serif; font-size: 20px; }
+	.content { padding: 2em 1em 0; }
 </style>
 </head>
 <body>
+<div id="layout" class="pure-g">
+<div class="content pure-u-1">
 <p><img src="fellowship_franken.png" width="400px"></img>
 <h1>Plussy Display</h1>
 	<p>
 	Dieses Display kann mit freier Software gesteuert werden.<br>F&uuml;r Android
 	steht hier eine App zur Verf&uuml;gung.<br> (Lizenz: GNU GPLv3):
-		<ul>
-			<li><a href="EFELMA.apk">APK Download</a></li>
-			<li><a href="EFELMA.zip">Quellcode der App</a></li>
-		</ul>
+	<p><a class="pure-button" href="EFELMA.apk">Andoid APK Download</a>
+	<a class="pure-button" href="EFELMA.zip">Quellcode der App</a></p>
 	</p>
 	
 	<p>
@@ -75,22 +78,22 @@ html = \
 	
 	<p>
 	Und hier noch ein paar Extras: Animationen!
-		<ul>
-			%s
-		</ul>
+		%s
 	</p>
 	
 	<p>
 	Status: %s
 	</p>
 <p>
+</div>
+</div>
 </body>
 </html>
 """
 
 animListHTML = ""
 for k in animList.keys():
-	animListHTML += "<li><a href=\"?anim=%d\">%s</a></li>" % (k,animList[k])
+	animListHTML += "<p><a class=\"pure-button\" href=\"?anim=%d\">%s</a></p>" % (k,animList[k])
 	
 print("Content-Type: text/html;charset=utf-8\n\n")
 print(html % (animListHTML, status))
