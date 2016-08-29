@@ -29,6 +29,10 @@ Log of all steps performed:
 	* `cd /lib/systemd/system`
 	* `mv cloud9.service cloud9.service.disabled`
 	* `mv cloud9.socket cloud9.socket.disabled`
+* fimware for WLAN
+	* recommended stick "TL-WN722N" (Atheros AR9271) requires firmware
+	* free firmware not available in debian main
+	* e.g., extract from Trisquel package "open-atk9k-htc-firmware": `/lib/firmware/htc_9271.fw`
 * hostapd
 	* install: `apt-get install hostapd  iw iwconfig wpa-supplicant`
 	* add config `/etc/hostapd/hostapd.conf`
