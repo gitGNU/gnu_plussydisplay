@@ -17,6 +17,7 @@
 ## along with this library.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
+V=1
 BINARY = src/plussyuc
 
 ANIM_SRC=$(shell find src/animations -name '*.c')
