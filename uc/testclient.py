@@ -32,6 +32,7 @@ s = serial.Serial(port, 115200, timeout=1)
 
 def devRequest(msg):
 	data = ("!%02x%s;" % (len(msg), msg)).encode()
+	print("req: ", data)
 	s.write(data)
 	s.flush()
 

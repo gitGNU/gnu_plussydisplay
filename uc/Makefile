@@ -35,4 +35,8 @@ debug:
 		    -f board/nucleo_f401re_ftdiswd.cfg \
 		    -c "init" -c "reset init"
 
+binfile:
+	arm-none-eabi-objcopy -O binary src/plussyuc.elf src/plussyuc.bin
+	arm-none-eabi-size src/plussyuc.elf
+
 .PHONY: clean2

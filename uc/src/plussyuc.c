@@ -258,12 +258,11 @@ int main(void)
 						comm_write("W");
 					}
 					break;
-				case '\\': // bootloader command
+				case '~': // bootloader command
 					ascii_decode((uint8_t*)usartData+1, len-1);
-					boot_cmd((uint8_t*)usartData, (uint8_t*)usartData2, (len-1)/2);
-					ascii_encode((uint8_t*)usartData2+1, len-1);
-					usartData2[0] = '/';
-					usartData2[1+len] = '\0';
+					boot_cmd((uint8_t*)usartData+1, (uint8_t*)usartData2, (len-1)/2);
+					ascii_encode((uint8_t*)usartData2, len-1);
+					usartData2[len-1] = '\0';
 					comm_write(usartData2);
 					break;
 				default:
