@@ -25,9 +25,12 @@
 #include "ws2811.h"
 
 // prescaler /1: 2.5us period
-#define WS2811_PERIOD 105
-#define WS2811_T0H 21
-#define WS2811_T1H 50
+//#define WS2811_PERIOD 105
+//#define WS2811_T0H 21
+//#define WS2811_T1H 50
+#define WS2811_PERIOD 60
+#define WS2811_T0H 12
+#define WS2811_T1H 29
 
 #define PWM_DATA_LEN (8*3*WS2811_NLEDS+50)
 // => total time: ~1.3ms

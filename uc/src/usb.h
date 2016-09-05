@@ -16,19 +16,12 @@
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef UTIL_H_
-#define UTIL_H_
+#ifndef SRC_USB_H_
+#define SRC_USB_H_
 
-//#############################################################################
-//# Delay Timer (using TIM4)
-//#############################################################################
+#include <stdint.h>
 
-void tmr_setup(void);
-void tmr_delay_us(uint16_t delay); // max. (2^16-1) = 65535 us
-void tmr_delay_ms(uint16_t delay); // max delay: 2^16/10-1 = 6552 ms
-uint8_t tmr_done(void);
-void tmr_wait(void);
-uint16_t tmr_get_status(void);
+void usb_setup(void);
+void usb_poll(void);
 
-
-#endif /* UTIL_H_ */
+#endif /* SRC_USB_H_ */

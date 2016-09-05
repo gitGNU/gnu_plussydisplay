@@ -19,6 +19,7 @@
 #define PLUSSYUC_C_
 
 #include <libopencm3/stm32/rcc.h>
+#include <libopencm3/stm32/flash.h>
 #include <libopencm3/stm32/gpio.h>
 #include <stdio.h>
 #include <string.h>
@@ -27,6 +28,7 @@
 #include "ws2811.h"
 #include "util.h"
 #include "usart.h"
+#include "usb.h"
 #include "animations/common.h"
 
 static void gpio_setup(void)
@@ -46,9 +48,27 @@ static uint8_t btn_pressed(void)
 	return (GPIOC_IDR & (1<<13)) ? 0 : 1;
 }
 
+const struct rcc_clock_scale clock_config =
+{ // 48MHz
+	.pllm = 12,
+	.plln = 96,
+	.pllp = 2,
+	.pllq = 2,
+	.pllr = 0,
+	.hpre = RCC_CFGR_HPRE_DIV_NONE,
+	.ppre1 = RCC_CFGR_PPRE_DIV_2,
+	.ppre2 = RCC_CFGR_PPRE_DIV_2,
+	.power_save = 1,
+	.flash_config = FLASH_ACR_ICE | FLASH_ACR_DCE |
+			FLASH_ACR_LATENCY_3WS,
+	.ahb_frequency  = 48000000,
+	.apb1_frequency = 24000000,
+	.apb2_frequency = 24000000,
+};
+
 int main(void)
 {
-	rcc_clock_setup_hse_3v3(&rcc_hse_12mhz_3v3[RCC_CLOCK_3V3_84MHZ]);
+	rcc_clock_setup_hse_3v3(&clock_config);
 	gpio_setup();
 	hwversion_setup();
 	btn_setup();
@@ -107,6 +127,10 @@ int main(void)
 		break;
 	}
 	
+	// init usb
+	if(hwver >= 2)
+		usb_setup();
+
 	// main loop
 	uint16_t compTime = 0;
 	int debugCnt = 0;
@@ -120,6 +144,9 @@ int main(void)
 		tmr_delay_us(10000);
 		
 		// check for commands
+		if(hwver >= 2)
+			usb_poll();
+
 		if(usart_rx_ready())
 		{
 			int len = usart_get_read(usartData, usartDataLen);
@@ -236,7 +263,8 @@ int main(void)
 		// determine how much time has passed
 		compTime = tmr_get_status(); // TODO: ouput to serial port?
 		// wait if frame time has not yet passed
-		tmr_wait();
+		while(!tmr_done())
+			usb_poll();
 		// trigger display update
 		ws2811_update(rgbDataDev);
 	}

@@ -36,8 +36,8 @@ void tmr_setup(void)
 	nvic_enable_irq(NVIC_TIM4_IRQ);
 }
 
-#define TMR_PSC_US 42-1
-#define TMR_PSC_MS 21000-1
+#define TMR_PSC_US 48-1
+#define TMR_PSC_MS 24000-1
 
 void tmr_delay_us(uint16_t delay) // max. (2^16-1) = 65535 us
 {
@@ -55,6 +55,11 @@ void tmr_delay_ms(uint16_t delay) // max delay: ca. 32000 ms
 	TIM4_ARR = delay*2;
 	_tmr_done = 0;
 	TIM4_CR1 |= TIM_CR1_CEN;
+}
+
+uint8_t tmr_done(void)
+{
+	return _tmr_done;
 }
 
 void tmr_wait(void)
