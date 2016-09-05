@@ -23,5 +23,9 @@
 
 void usb_setup(void);
 void usb_poll(void);
+uint8_t usb_rx_ready(void);
+int usb_get_read(char* str, uint16_t maxlen);
+void usb_write(char* str);
+
 
 #endif /* SRC_USB_H_ */

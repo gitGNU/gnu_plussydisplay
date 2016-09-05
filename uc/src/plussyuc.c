@@ -136,6 +136,9 @@ int main(void)
 	int debugCnt = 0;
 	uint8_t btnLastPressed = 0;
 
+	void (*comm_write)(char*) = 0;
+	int (*comm_get_read)(char*,uint16_t) = 0;
+
 	while (1)
 	{
 		// toggle LED
@@ -147,13 +150,24 @@ int main(void)
 		if(hwver >= 2)
 			usb_poll();
 
-		if(usart_rx_ready())
+		if(usb_rx_ready())
 		{
-			int len = usart_get_read(usartData, usartDataLen);
+			comm_write = &usb_write;
+			comm_get_read = &usb_get_read;
+		}
+		else if(usart_rx_ready())
+		{
+			comm_write = &usart_write;
+			comm_get_read = &usart_get_read;
+		}
+
+		if(usart_rx_ready() || usb_rx_ready())
+		{
+			int len = comm_get_read(usartData, usartDataLen);
 
 			if(len < 1)
 			{
-				usart_write("?");
+				comm_write("?");
 			}
 			else
 			{
@@ -162,33 +176,33 @@ int main(void)
 				{
 				case 'e': // [e]cho test
 					sprintf(usartData, "E%d", debugCnt++);
-					usart_write(usartData);
+					comm_write(usartData);
 					break;
 				case 'b': // [b]rightness scale setting
 					sscanf(usartData+1, "%02x", &sel);
 					brightnessScale = (uint8_t)sel;
-					usart_write("B");
+					comm_write("B");
 					break;
 				case 'c': // [c]omputation time
 					sprintf(usartData, "C%d", compTime);
-					usart_write(usartData);
+					comm_write(usartData);
 					break;
 				case 's': // [s]top animations
 					animSel = -1;
 					memset(rgbData, 0, rgbDataLen);
-					usart_write("S");
+					comm_write("S");
 					break;
 				case 'a': // [a]nimation selection
 					sscanf(usartData+1, "%02x", &sel);
 					if(sel <= animSelMax)
 						animSel = sel;
 					sprintf(usartData, "A%c", animSel==sel ? '1':'0');
-					usart_write(usartData);
+					comm_write(usartData);
 					break;
 				case 'l': // [l]ist query
 					sscanf(usartData+1, "%02x", &sel);
 					sprintf(usartData, "L%s", sel > animSelMax ? "" : animTable[sel].name);
-					usart_write(usartData);
+					comm_write(usartData);
 					break;
 				case 'm': // [m]anual led set
 					animSel = -1;
@@ -204,19 +218,19 @@ int main(void)
 					usartData[0] = 'M';
 					for(int i = 0; i < rgbDataLen; i++)
 						sprintf(usartData+1+i*2, "%02x", rgbDataManual[i]);
-					usart_write(usartData);
+					comm_write(usartData);
 					break;
 				case 'r': // [r]ead complete led matrix
 					usartData[0] = 'R';
 					for(int i = 0; i < rgbDataLen; i++)
 						sprintf(usartData+1+i*2, "%02x", rgbDataManual[i]);
-					usart_write(usartData);
+					comm_write(usartData);
 					break;
 				case 'w': // [w]rite complete led matrix
 					animSel = -1;
 					if(len != (1+2*rgbDataLen)) // 1 char command, 6 chars per LED
 					{
-						usart_write("?");
+						comm_write("?");
 					}
 					else
 					{
@@ -228,11 +242,11 @@ int main(void)
 							rgbDataManual[3*sel+1] = g;
 							rgbDataManual[3*sel+2] = b;
 						}
-						usart_write("W");
+						comm_write("W");
 					}
 					break;
 				default:
-					usart_write("?");
+					comm_write("?");
 				}
 			}
 		}

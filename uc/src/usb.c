@@ -22,6 +22,8 @@
 #include "usb.h"
 
 #include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
 #include <libopencm3/stm32/rcc.h>
 #include <libopencm3/stm32/gpio.h>
 #include <libopencm3/usb/usbd.h>
@@ -198,6 +200,21 @@ static int cdcacm_control_request(usbd_device *usbd_dev,
 	return 0;
 }
 
+#define USB_CMDLEN 256
+#define USB_BUFLEN (USB_CMDLEN+2+2)
+static char txBuf[USB_BUFLEN];
+static char rxBuf[USB_BUFLEN];
+static unsigned int rxLen = 0;
+static uint8_t rxCnt = 0;
+static volatile uint8_t rxReq = 0;
+static unsigned int txLen = 0;
+//static volatile uint8_t txReq = 0;
+
+#define RX_STATE_STARTOFFRAME 0
+#define RX_STATE_LEN 1
+#define RX_STATE_DATA 2
+static uint8_t rxState = 0;
+
 static void cdcacm_data_rx_cb(usbd_device *usbd_dev, uint8_t ep)
 {
 	(void)ep;
@@ -205,9 +222,56 @@ static void cdcacm_data_rx_cb(usbd_device *usbd_dev, uint8_t ep)
 	char buf[64];
 	int len = usbd_ep_read_packet(usbd_dev, 0x01, buf, 64);
 
-	if (len) {
-		while (usbd_ep_write_packet(usbd_dev, 0x82, buf, len) == 0);
+	for(uint8_t i = 0; i < len; i++)
+	{
+		switch(rxState)
+		{
+		case RX_STATE_STARTOFFRAME:
+			if(buf[i] == '!')
+			{
+				rxState = RX_STATE_LEN;
+				rxLen = 0;
+				rxCnt = 0;
+			}
+			break;
+
+		case RX_STATE_LEN:
+			rxBuf[rxCnt++] = buf[i];
+			if(rxCnt == 2)
+			{
+				sscanf(rxBuf+1, "%02x", &rxLen);
+				if(rxLen>0)
+					rxState = RX_STATE_DATA;
+				else
+					rxState = RX_STATE_STARTOFFRAME;
+				rxCnt = 0;
+			}
+			break;
+
+		case RX_STATE_DATA:
+			rxBuf[rxCnt++] = buf[i];
+			if(rxCnt == (rxLen+1))
+			{
+				if((rxBuf[rxLen] == ';') && !rxReq)
+				{
+					rxReq = 1;
+					rxState = RX_STATE_STARTOFFRAME;
+				}
+				else
+				{
+					rxState = RX_STATE_STARTOFFRAME;
+				}
+			}
+			break;
+		}
 	}
+/*
+	if(txReq)
+	{
+		while (usbd_ep_write_packet(usbd_dev, 0x82, txBuf, txLen) == 0);
+		txReq = 0;
+	}
+*/
 }
 
 static void cdcacm_set_config(usbd_device *usbd_dev, uint16_t wValue)
@@ -249,3 +313,38 @@ void usb_poll(void)
 	usbd_poll(usbd_dev);
 }
 
+uint8_t usb_rx_ready(void)
+{
+	return rxReq;
+}
+
+int usb_get_read(char* str, uint16_t maxlen)
+{
+	for(int i = 0; (i < maxlen) && (i < (uint8_t)rxLen); i++)
+	{
+		*str = rxBuf[i];
+		str++;
+	}
+	*str = 0;
+	int tmp = rxLen;
+	rxReq = 0;
+	return tmp;
+}
+
+void usb_write(char* str)
+{
+	unsigned int len = strlen(str);
+	sprintf(txBuf, "@%02x", len);
+	int i = 3;
+	txLen = 0;
+	while(*str != 0)
+	{
+		txBuf[i++] = *str;
+		str++;
+	}
+	txBuf[i++] = ';';
+	txLen = len+4;
+	//txReq = 1;
+	while (usbd_ep_write_packet(usbd_dev, 0x82, txBuf, txLen) == 0);
+
+}
