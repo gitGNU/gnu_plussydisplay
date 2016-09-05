@@ -81,3 +81,50 @@ void tim4_isr(void)
 	TIM4_SR &= ~TIM_SR_UIF;
 	_tmr_done = 1;
 }
+
+//#############################################################################
+//# ASCII Utilities
+//#############################################################################
+
+uint8_t asciichar2halfbyte(uint8_t val)
+{
+	if(val >= 48 && val <= 57)
+		return val - 48;
+	else if(val >= 65 && val <= 70)
+		return val - 65 + 10;
+	else if(val >= 97 && val <= 102)
+		return val - 97 + 10;
+	else
+		return 0;
+}
+
+uint8_t halfbyte2asciichar(uint8_t halfint)
+{
+	if(halfint < 10)
+		return halfint + 48;
+	else
+		return halfint - 10 + 65;
+}
+
+
+
+void ascii_decode(uint8_t* bufIn, int lenIn)
+{
+	for(int i = 0; i < (lenIn>>1); i++)
+	{
+		bufIn[i] = (asciichar2halfbyte(bufIn[i<<1]) << 4)
+				| asciichar2halfbyte(bufIn[(i<<1)+1]);
+	}
+}
+
+void ascii_encode(uint8_t* bufOut, int lenOut)
+{
+	int lenDec = lenOut>>1;
+	for(int i = 0; i < lenDec; i++)
+	{
+		bufOut[((lenDec-1-i)<<1)+1] = halfbyte2asciichar(bufOut[lenDec-1-i] & 0xF);
+		bufOut[(lenDec-1-i)<<1] = halfbyte2asciichar(bufOut[lenDec-1-i] >> 4);
+	}
+}
+
+

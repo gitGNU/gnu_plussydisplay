@@ -24,6 +24,7 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "boot.h"
 #include "hwversion.h"
 #include "ws2811.h"
 #include "util.h"
@@ -68,6 +69,13 @@ const struct rcc_clock_scale clock_config =
 
 int main(void)
 {
+#ifdef BOOT
+	boot_check();
+#else
+	// non-bootloader: move vector table to user space
+	scb_move_vector_table(0x10000);
+#endif
+
 	rcc_clock_setup_hse_3v3(&clock_config);
 	gpio_setup();
 	hwversion_setup();
@@ -93,6 +101,7 @@ int main(void)
 
 	const int usartDataLen = 256+1;
 	char usartData[usartDataLen];
+	char usartData2[usartDataLen];
 	
 	// options
 	uint8_t brightnessScale = 0xff;
@@ -144,7 +153,11 @@ int main(void)
 		// toggle LED
 		gpio_toggle(GPIOA, GPIO5);
 		// configure display update timer with period per frame (100 Hz)
+		#ifdef BOOT
+		tmr_delay_us(50000);
+		#else
 		tmr_delay_us(10000);
+		#endif
 		
 		// check for commands
 		if(hwver >= 2)
@@ -245,6 +258,14 @@ int main(void)
 						comm_write("W");
 					}
 					break;
+				case '\\': // bootloader command
+					ascii_decode((uint8_t*)usartData+1, len-1);
+					boot_cmd((uint8_t*)usartData, (uint8_t*)usartData2, (len-1)/2);
+					ascii_encode((uint8_t*)usartData2+1, len-1);
+					usartData2[0] = '/';
+					usartData2[1+len] = '\0';
+					comm_write(usartData2);
+					break;
 				default:
 					comm_write("?");
 				}
@@ -252,10 +273,12 @@ int main(void)
 		}
 		else if(!btnLastPressed && btn_pressed())
 		{
+			#ifndef BOOT
 			if(animSel == animSelMax)
 				animSel = -1;
 			else
 				animSel++;
+			#endif
 			btnLastPressed = 1;
 		}
 		else if(!btn_pressed())

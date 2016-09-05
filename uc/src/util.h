@@ -30,5 +30,13 @@ uint8_t tmr_done(void);
 void tmr_wait(void);
 uint16_t tmr_get_status(void);
 
+//#############################################################################
+//# ASCII Utilities
+//#############################################################################
+
+uint8_t asciichar2halfbyte(uint8_t val);
+uint8_t halfbyte2asciichar(uint8_t halfint);
+void ascii_decode(uint8_t* bufIn, int lenIn);
+void ascii_encode(uint8_t* bufOut, int lenOut);
 
 #endif /* UTIL_H_ */
