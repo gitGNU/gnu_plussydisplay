@@ -98,6 +98,8 @@ int main(void)
 		rgbData[i] = 0;
 	for(int i = 0; i < rgbDataLen; i++)
 		rgbDataManual[i] = 0;
+	for(int i = 0; i < rgbDataLen; i++)
+		rgbDataDev[i] = 0;
 
 	const int usartDataLen = 256+1;
 	char usartData[usartDataLen];
@@ -148,16 +150,26 @@ int main(void)
 	void (*comm_write)(char*) = 0;
 	int (*comm_get_read)(char*,uint16_t) = 0;
 
+#ifdef BOOT
+	ws2811_update(rgbDataDev);
+#endif
+
 	while (1)
 	{
+#ifdef BOOT
+		if(tmr_done())
+		{
+			// toggle LED
+			gpio_toggle(GPIOA, GPIO5);
+			// configure toggle led timer
+			tmr_delay_ms(200);
+		}
+#else
 		// toggle LED
 		gpio_toggle(GPIOA, GPIO5);
 		// configure display update timer with period per frame (100 Hz)
-		#ifdef BOOT
-		tmr_delay_us(50000);
-		#else
 		tmr_delay_us(10000);
-		#endif
+#endif
 		
 		// check for commands
 		if(hwver >= 2)
@@ -284,7 +296,7 @@ int main(void)
 		{
 			btnLastPressed = 0;
 		}
-		
+#ifndef BOOT
 		// calculate next frame
 		if(animSel >= 0)
 			animTable[animSel].func(rgbData, rgbDataLen);
@@ -303,6 +315,7 @@ int main(void)
 			usb_poll();
 		// trigger display update
 		ws2811_update(rgbDataDev);
+#endif
 	}
 
 	return 0;
