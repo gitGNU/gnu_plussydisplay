@@ -219,10 +219,10 @@ static void cdcacm_data_rx_cb(usbd_device *usbd_dev, uint8_t ep)
 {
 	(void)ep;
 
-	char buf[64];
-	int len = usbd_ep_read_packet(usbd_dev, 0x01, buf, 64);
+	char buf[256];
+	int len = usbd_ep_read_packet(usbd_dev, 0x01, buf, 256);
 
-	for(uint8_t i = 0; i < len; i++)
+	for(int i = 0; i < len; i++)
 	{
 		switch(rxState)
 		{
@@ -265,13 +265,6 @@ static void cdcacm_data_rx_cb(usbd_device *usbd_dev, uint8_t ep)
 			break;
 		}
 	}
-/*
-	if(txReq)
-	{
-		while (usbd_ep_write_packet(usbd_dev, 0x82, txBuf, txLen) == 0);
-		txReq = 0;
-	}
-*/
 }
 
 static void cdcacm_set_config(usbd_device *usbd_dev, uint16_t wValue)
@@ -344,7 +337,21 @@ void usb_write(char* str)
 	}
 	txBuf[i++] = ';';
 	txLen = len+4;
-	//txReq = 1;
-	while (usbd_ep_write_packet(usbd_dev, 0x82, txBuf, txLen) == 0);
+
+	int offs = 0;
+	while(txLen > 0)
+	{
+		if(txLen > 64)
+		{
+			while (usbd_ep_write_packet(usbd_dev, 0x82, txBuf+offs, 64) == 0);
+			txLen -= 64;
+			offs += 64;
+		}
+		else
+		{
+			while (usbd_ep_write_packet(usbd_dev, 0x82, txBuf+offs, txLen) == 0);
+			txLen = 0;
+		}
+	}
 
 }
