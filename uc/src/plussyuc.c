@@ -71,6 +71,7 @@ int main(void)
 {
 #ifdef BOOT
 	boot_check();
+	boot_setup();
 #else
 	// non-bootloader: move vector table to user space
 	scb_move_vector_table(0x10000);

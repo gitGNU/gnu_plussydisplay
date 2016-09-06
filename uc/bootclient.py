@@ -22,7 +22,7 @@ import time
 import signal
 import serial
 
-bufLen = 2
+bufLen = 64
 timeout = 5.0
 dummyTx = [0]*bufLen
 
@@ -55,13 +55,13 @@ def query(s, msg):
 	devRequest(s,"~"+ascMsg)
 	ans = devResponse(s)
 	print(ans)
-	return
-	if len(c) != msgLen:
-		print("got invalid message: ", c)
+	if len(ans) != len(msg)*2:
+		print("got invalid message: ", ans)
 		sys.exit(2)
-	for i in range(0,len(ascMsg)):
-		ans.append( int(c[4+2*i:6+2*i],16) )
-	return ans
+	a = []
+	for i in range(0,len(msg)):
+		a.append( int(ans[2*i:2*i+2],16) )
+	return a
 
 def u32bytes(v):
 	b = [0]*4
@@ -98,9 +98,8 @@ if __name__ == "__main__":
 	
 	h = serial.Serial(dev, timeout=1)
 	
-	query(h,[0x01])
+	ans = query(h,[0x01])
 	print("ans:", getHexStr(ans))
-	sys.exit(0)
 	
 	print("reading file ...")
 	f = open(fname, "rb")
@@ -158,7 +157,6 @@ if __name__ == "__main__":
 	print("%d errors." % err)
 
 	print("reboot ...")
-	gpio_boot_release()
 	ans = query(h, [0xff])
 	print("ans:", getHexStr(ans))
 

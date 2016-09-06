@@ -116,7 +116,7 @@ void boot_check(void)
 		STK_CSR = 0;
 		STK_RVR = 0;
 		STK_CVR = 0;
-		__asm volatile ("MSR msp, %0\n" : : "r" (0x2001ffff) : "sp"); // addr: see linker script
+		__asm volatile ("MSR msp, %0\n" : : "r" (0x20017fff) : "sp"); // addr: see linker script
 		void (*app)(void) = (void*)(*((uint32_t*)0x08010004));
 		app();
 	}
