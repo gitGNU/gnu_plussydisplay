@@ -239,7 +239,7 @@ static void cdcacm_data_rx_cb(usbd_device *usbd_dev, uint8_t ep)
 			rxBuf[rxCnt++] = buf[i];
 			if(rxCnt == 2)
 			{
-				sscanf(rxBuf+1, "%02x", &rxLen);
+				sscanf(rxBuf, "%02x", &rxLen);
 				if(rxLen>0)
 					rxState = RX_STATE_DATA;
 				else
