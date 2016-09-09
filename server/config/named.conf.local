@@ -2,7 +2,6 @@
 // are permitted in any medium without royalty provided the copyright
 // notice and this notice are preserved.  This file is offered as-is,
 // without any warranty.
-
 //
 // Do any local configuration here
 //
@@ -11,15 +10,15 @@
 // organization
 //include "/etc/bind/zones.rfc1918";
 
-zone "fellowship-franken.org" {
+zone "." {
         type master;
         file "/etc/bind/db.fsfe";
 	notify no;
 };
 
-zone "4.168.192.in-addr.arpa" {
-	type master;
-	file "/etc/bind/db.4.168.192";
-	notify no;
-};
+//zone "4.168.192.in-addr.arpa" {
+//	type master;
+//	file "/etc/bind/db.4.168.192";
+//	notify no;
+//};
 

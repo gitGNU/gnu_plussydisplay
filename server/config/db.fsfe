@@ -2,12 +2,11 @@
 ; are permitted in any medium without royalty provided the copyright
 ; notice and this notice are preserved.  This file is offered as-is,
 ; without any warranty.
-
 ;
 ; BIND data file for local loopback interface
 ;
-$TTL	604800
-@	IN	SOA	fellowship-franken.org. root.fellowship-franken.org. (
+$TTL	1
+@	IN	SOA	. root.localhost. (
 			      2		; Serial
 			 604800		; Refresh
 			  86400		; Retry
@@ -15,8 +14,8 @@ $TTL	604800
 			 604800 )	; Negative Cache TTL
 ;
 
-		NS	bbb
+	IN	NS .
 
-bbb	A	192.168.4.1
-plussy	CNAME	bbb
+.	IN	A	192.168.4.1
+*.	IN	A	192.168.4.1
 
