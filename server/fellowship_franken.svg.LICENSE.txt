@@ -1,5 +1,3 @@
 Image License: GNU GPLv3 or any later version
 Author: Florian Snow <florian@familysnow.net>
 
-Created from fellowship_franken.svg
-
