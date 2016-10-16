@@ -55,7 +55,7 @@ static void rgb2pwm(uint8_t* rgbData)
 	}
 }
 
-void ws2811_setup(void)
+void ws2811_setup(uint8_t options)
 {
 	for(int i = 0; i < PWM_DATA_LEN; i++)
 		pwmData[i] = 0;
@@ -71,7 +71,7 @@ void ws2811_setup(void)
 	TIM3_ARR = WS2811_PERIOD; // counter period
 	TIM3_CCMR1 = TIM_CCMR1_OC1M_PWM1 | TIM_CCMR1_OC1PE; // ch1 pwm mode, preload enabled
 	TIM3_CCR1 = WS2811_T0H; // initial duty cycle
-	TIM3_CCER = TIM_CCER_CC1E | TIM_CCER_CC1P; // enable channel 1, inverse polarity
+	TIM3_CCER = TIM_CCER_CC1E | ((options & WS2811_OPTION_INVPOLARITY) ? TIM_CCER_CC1P : 0); // enable channel 1, inverse polarity
 	TIM3_CR1 = TIM_CR1_ARPE; // ARR preload
 	TIM3_DIER = TIM_DIER_CC1DE; // enable ch1 DMA request
 	

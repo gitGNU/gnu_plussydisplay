@@ -82,7 +82,6 @@ int main(void)
 	hwversion_setup();
 	btn_setup();
 	tmr_setup();
-	ws2811_setup();
 	usart_setup();
 	
 	const uint16_t rgbDataLen = WS2811_NLEDS*3;
@@ -121,6 +120,7 @@ int main(void)
 	tmr_wait();
 	uint8_t hwver = hwversion_detect();
 	void (*hwmap)(uint8_t*, uint8_t*) = hwversion_remap_none; // args: src,dest
+	uint8_t ws2811_options = WS2811_OPTION_INVPOLARITY;
 	
 	switch(hwver)
 	{
@@ -135,6 +135,9 @@ int main(void)
 	case 3: // rev3 is PCB labeled "Plussy v2 Summit Edition" with WS2812B SMD LEDs
 		hwmap = hwversion_remap_rev2_ws2812b;
 		break;
+	case 7: // rev7 is PCB labeled "lightctrl v1" with 8 channels and RS485 drivers connected to WS2812B SMD LEDs
+		ws2811_options &= ~WS2811_OPTION_INVPOLARITY; // has no inverting transistor driver
+		break;
 	default: // unknown revision, assume no mapping
 		break;
 	}
@@ -142,6 +145,9 @@ int main(void)
 	// init usb
 	if(hwver >= 2)
 		usb_setup();
+
+	// init led driver
+	ws2811_setup(ws2811_options);
 
 	// main loop
 	uint16_t compTime = 0;
