@@ -25,7 +25,7 @@
 #include <string.h>
 
 #include "boot.h"
-#include "hwversion.h"
+#include "hwinit.h"
 #include "ws2811.h"
 #include "util.h"
 #include "usart.h"

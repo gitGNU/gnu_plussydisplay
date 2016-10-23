@@ -19,7 +19,7 @@
 #include <libopencm3/stm32/rcc.h>
 #include <libopencm3/stm32/gpio.h>
 
-#include "hwversion.h"
+#include "hwinit.h"
 #include "ws2811.h"
 
 void hwversion_setup(void)

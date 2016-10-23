@@ -16,8 +16,8 @@
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef HWVERSION_H_
-#define HWVERSION_H_
+#ifndef HWINIT_H_
+#define HWINIT_H_
 
 void hwversion_setup(void);
 uint8_t hwversion_detect(void);
@@ -25,5 +25,5 @@ void hwversion_remap_rev1(uint8_t* rgbDataSrc, uint8_t* rgbDataDest);
 void hwversion_remap_rev2_ws2812b(uint8_t* rgbDataSrc, uint8_t* rgbDataDest);
 void hwversion_remap_none(uint8_t* rgbDataSrc, uint8_t* rgbDataDest);
 
-#endif /* HWVERSION_H_ */
+#endif /* HWINIT_H_ */
 
