@@ -89,68 +89,24 @@ int main(void)
 	
 	struct plussy_params p;
 
+	// allocate data
 	p.rgbDataLen = WS2811_NLEDS*3;
-
-	// data before mapping, first non-pcb variant
 	uint8_t rgbData[p.rgbDataLen];
 	uint8_t rgbDataManual[p.rgbDataLen];
+	uint8_t rgbDataDev[p.rgbDataLen]; // data mapped to device version
 	p.rgbData = rgbData;
 	p.rgbDataManual = rgbDataManual;
+	p.rgbDataDev = rgbDataDev;
 
-	// data mapped to device version
-	uint8_t rgbDataDev[p.rgbDataLen];
-
-	// initialize data
-	for(int i = 0; i < p.rgbDataLen; i++)
-		rgbData[i] = 0;
-	for(int i = 0; i < p.rgbDataLen; i++)
-		rgbDataManual[i] = 0;
-	for(int i = 0; i < p.rgbDataLen; i++)
-		rgbDataDev[i] = 0;
-
-	// options
-	p.brightnessScale = 0xff;
-
-	// animation table
-	p.animSel = -1;
-	p.animSelMax = -1;
-
-	while(animTable[p.animSelMax+1].name) // find end of table
-		p.animSelMax++;
-
-	// detect hardware version
-	tmr_delay_us(10000);
-	tmr_wait();
-	uint8_t hwver = hwversion_detect();
-	void (*hwmap)(uint8_t*, uint8_t*) = hwversion_remap_none; // args: src,dest
-	uint8_t ws2811_options = WS2811_OPTION_INVPOLARITY;
-	
-	switch(hwver)
-	{
-	case 0: // inital version, LEDs connected with wires
-		break;
-	case 1: // rev1 is PCB labeled "LED Matrix / Plussy v0"
-		hwmap = hwversion_remap_rev1;
-		break;
-	case 2: // rev2 is PCB labeled "Plussy v2 Summit Edition" with 8mm WS2811 LEDs
-		hwmap = hwversion_remap_rev1;
-		break;
-	case 3: // rev3 is PCB labeled "Plussy v2 Summit Edition" with WS2812B SMD LEDs
-		hwmap = hwversion_remap_rev2_ws2812b;
-		break;
-	case 7: // rev7 is PCB labeled "lightctrl v1" with 8 channels and RS485 drivers connected to WS2812B SMD LEDs
-		ws2811_options &= ~WS2811_OPTION_INVPOLARITY; // has no inverting transistor driver
-		break;
-	default: // unknown revision, assume no mapping
-		break;
-	}
+	// initialize (LED-)hardware
+	hwinit(&p);
 	
 	// init usb
-	if(hwver >= 2)
+	if(p.hwver >= 2)
 		usb_setup();
 
 	// init led driver
-	ws2811_setup(ws2811_options);
+	ws2811_setup(p.ws2811_options);
 
 	// main loop
 	p.compTime = 0;
@@ -179,7 +135,7 @@ int main(void)
 #endif
 		
 		// check for commands
-		if(hwver >= 2)
+		if(p.hwver >= 2)
 			usb_poll();
 		cmd_proc(&p);
 
@@ -205,9 +161,9 @@ int main(void)
 			animTable[p.animSel].func(p.rgbData, p.rgbDataLen);
 		// remap data
 		if(p.animSel < 0)
-			hwmap(p.rgbDataManual, rgbDataDev);
+			p.hwmap(p.rgbDataManual, rgbDataDev);
 		else
-			hwmap(p.rgbData, rgbDataDev);
+			p.hwmap(p.rgbData, rgbDataDev);
 		// scale brightness
 		for(uint8_t i = 0; i < WS2811_NLEDS; i++)
 			bscale(rgbDataDev+3*i, p.brightnessScale);

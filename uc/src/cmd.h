@@ -23,8 +23,13 @@
 
 struct plussy_params
 {
+	uint8_t hwver;
+	void (*hwmap)(uint8_t*, uint8_t*);
+	uint8_t ws2811_options;
+
 	uint8_t* rgbData;
 	uint8_t* rgbDataManual;
+	uint8_t* rgbDataDev;
 	uint16_t rgbDataLen;
 
 	uint8_t brightnessScale;

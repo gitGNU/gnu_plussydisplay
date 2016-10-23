@@ -19,6 +19,10 @@
 #ifndef HWINIT_H_
 #define HWINIT_H_
 
+#include "cmd.h"
+
+void hwinit(struct plussy_params* p);
+
 void hwversion_setup(void);
 uint8_t hwversion_detect(void);
 void hwversion_remap_rev1(uint8_t* rgbDataSrc, uint8_t* rgbDataDest);

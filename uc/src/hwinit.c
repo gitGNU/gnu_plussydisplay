@@ -21,6 +21,56 @@
 
 #include "hwinit.h"
 #include "ws2811.h"
+#include "animations/common.h"
+#include "util.h"
+
+void hwinit(struct plussy_params* p)
+{
+	// initialize data
+	for(int i = 0; i < p->rgbDataLen; i++)
+		p->rgbData[i] = 0;
+	for(int i = 0; i < p->rgbDataLen; i++)
+		p->rgbDataManual[i] = 0;
+	for(int i = 0; i < p->rgbDataLen; i++)
+		p->rgbDataDev[i] = 0;
+
+	// options
+	p->brightnessScale = 0xff;
+
+	// animation table
+	p->animSel = -1;
+	p->animSelMax = -1;
+
+	while(animTable[p->animSelMax+1].name) // find end of table
+		p->animSelMax++;
+
+	// detect hardware version
+	tmr_delay_us(10000);
+	tmr_wait();
+	p->hwver = hwversion_detect();
+	p->hwmap = hwversion_remap_none; // args: src,dest
+	p->ws2811_options = WS2811_OPTION_INVPOLARITY;
+
+	switch(p->hwver)
+	{
+	case 0: // inital version, LEDs connected with wires
+		break;
+	case 1: // rev1 is PCB labeled "LED Matrix / Plussy v0"
+		p->hwmap = hwversion_remap_rev1;
+		break;
+	case 2: // rev2 is PCB labeled "Plussy v2 Summit Edition" with 8mm WS2811 LEDs
+		p->hwmap = hwversion_remap_rev1;
+		break;
+	case 3: // rev3 is PCB labeled "Plussy v2 Summit Edition" with WS2812B SMD LEDs
+		p->hwmap = hwversion_remap_rev2_ws2812b;
+		break;
+	case 7: // rev7 is PCB labeled "lightctrl v1" with 8 channels and RS485 drivers connected to WS2812B SMD LEDs
+		p->ws2811_options &= ~WS2811_OPTION_INVPOLARITY; // has no inverting transistor driver
+		break;
+	default: // unknown revision, assume no mapping
+		break;
+	}
+}
 
 void hwversion_setup(void)
 {
