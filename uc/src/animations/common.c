@@ -18,6 +18,14 @@
 
 #include "common.h"
 
+struct anim_t animTable[] = {
+	{ "Test Animation", &anim_test },
+	{ "Green", &anim_green },
+	{ "Constant Green", &anim_constgreen },
+	{ 0, 0 } // end-of-table flag
+};
+
+
 void h2rgb(uint8_t* rgb, uint8_t h) // h = HSV with hue only ;-)
 {
 	uint8_t i = h/43; // roughly /(255/6)

@@ -51,17 +51,8 @@ void anim_test(uint8_t* data, uint16_t len);
 void anim_green(uint8_t* data, uint16_t len);
 void anim_constgreen(uint8_t* data, uint16_t len);
 
-#ifdef PLUSSYUC_C_
+// (2) add your function to this table (in common.c):
+extern struct anim_t animTable[];
 
-// (2) add your function to this table:
-struct anim_t animTable[] = {
-	{ "Test Animation", &anim_test },
-	{ "Green", &anim_green },
-	{ "Constant Green", &anim_constgreen },
-	{ 0, 0 } // end-of-table flag
-};
-
-
-#endif
 
 #endif
