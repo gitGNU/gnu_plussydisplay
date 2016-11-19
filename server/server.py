@@ -20,11 +20,48 @@
 import sys
 import socket
 import socketserver
+import selectors
 import threading
 import time
 import queue
 import xmlrpc.client
 import serial
+
+########################################################################
+# Utility
+########################################################################
+
+class SelectableQueue(queue.Queue):
+	def __init__(self):
+		super().__init__()
+		self.__txsock, self.__rxsock = socket.socketpair()
+	
+	def fileno(self):
+		return self.__rxsock.fileno()
+	
+	def put(self, item):
+		super().put(item)
+		self.__txsock.send(b".")
+	
+	def get(self):
+		self.__rxsock.recv(1)
+		return super().get()
+
+class ConnectionManager:
+	def __init__(self):
+		self.conns = {}
+	
+	def add(self, port, q):
+		self.conns[port] = q
+		
+	def remove(self, port):
+		del self.conns[port]
+		
+	def sendBroadcast(self, msg):
+		for q in self.conns.values():
+			q.put(msg)
+
+mgr = ConnectionManager()
 
 ########################################################################
 # Discovery Broadcast
@@ -102,7 +139,9 @@ class HardwareThread(threading.Thread):
 					
 					if ans[0] == "M": # store answer for quick replies if command was 'm'
 						lastM = ans
-					req.replyQueue.put(ans)
+						mgr.sendBroadcast(ans) # send changes to all clients
+					else:
+						req.replyQueue.put(ans)
 				
 			except queue.Empty:
 				pass
@@ -120,23 +159,44 @@ class HardwareThread(threading.Thread):
 
 class PlussyTCPHandler(socketserver.StreamRequestHandler):
 	def handle(self):
-		q = queue.Queue() # thread-safe queue for replies
+		self.q = SelectableQueue() # thread-safe queue for replies
 		tname = threading.current_thread().name # thread name
-		pname = self.request.getpeername() # peer ip and port (as tuple)
-		label = tname + ", ip=" + pname[0] + ", port=" + str(pname[1]) + ": "
+		ip,port = self.request.getpeername() # peer ip and port (as tuple)
+		label = tname + ", ip=" + ip + ", port=" + str(port) + ": "
+		mgr.add(port,self.q)
 		print(label + "new connection")
 		
+		sel = selectors.DefaultSelector()
+		sel.register(self.rfile, selectors.EVENT_READ, \
+			lambda: self.user_cmd())
+		sel.register(self.q, selectors.EVENT_READ, \
+			lambda: self.user_ans())
+		
 		while True:
-			req = self.rfile.readline().decode().strip() # get one line from socket
-			if len(req) == 0: # socket has probably been closed
+			events = sel.select()
+			err = False
+			for key,mask in events:
+				if not key.data():
+					err = True
+			if err:
 				break
-			#print(label + "got request", "\"" + req + "\"")
-			
-			requestQueue.put(HardwareRequest(req, q)) # send request to hardware thread
-			resp = q.get(timeout=1) # get reply from reply queue
-			self.wfile.write((resp+"\n").encode()) # send reply to peer
-			
+
+		mgr.remove(port)
 		print(label + "disconnect")
+		
+	def user_cmd(self):
+		req = self.rfile.readline().decode().strip() # get one line from socket
+		if len(req) == 0: # socket has probably been closed
+			return False
+		#print(label + "got request", "\"" + req + "\"")
+		
+		requestQueue.put(HardwareRequest(req, self.q)) # send request to hardware thread
+		return True
+		
+	def user_ans(self):
+		resp = self.q.get() # get reply from reply queue
+		self.wfile.write((resp+"\n").encode()) # send reply to peer
+		return True
 
 class ThreadedTCPServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
 	allow_reuse_address = True
