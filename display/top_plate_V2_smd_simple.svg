@@ -13,12 +13,11 @@
    height="99.999992mm"
    id="svg2"
    version="1.1"
-   inkscape:version="0.92.1 r15371"
-   sodipodi:docname="bottom_plate_bbb.svg"
+   inkscape:version="0.91 r"
+   sodipodi:docname="top_plate_V2_smd_simple.svg"
    inkscape:export-filename="/home/cc/daten/Projekte/fsfe/fellowship_display.png"
    inkscape:export-xdpi="260.10001"
-   inkscape:export-ydpi="260.10001"
-   viewBox="0 0 354.33069 354.33069">
+   inkscape:export-ydpi="260.10001">
   <defs
      id="defs4" />
   <sodipodi:namedview
@@ -29,29 +28,22 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1.4"
-     inkscape:cx="240.40723"
-     inkscape:cy="171.16653"
+     inkscape:cx="162.3384"
+     inkscape:cy="221.62781"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="true"
      units="mm"
-     inkscape:window-width="1366"
-     inkscape:window-height="720"
-     inkscape:window-x="0"
-     inkscape:window-y="24"
-     inkscape:window-maximized="1"
+     inkscape:window-width="1473"
+     inkscape:window-height="988"
+     inkscape:window-x="168"
+     inkscape:window-y="76"
+     inkscape:window-maximized="0"
      inkscape:snap-bbox="true"
      inkscape:snap-bbox-midpoints="true"
      inkscape:object-paths="true"
      inkscape:snap-smooth-nodes="true"
-     inkscape:snap-nodes="true"
-     inkscape:object-nodes="true"
-     inkscape:snap-global="true"
-     showguides="true"
-     inkscape:snap-object-midpoints="true"
-     inkscape:snap-intersection-paths="false"
-     inkscape:snap-grids="true"
-     inkscape:snap-to-guides="false">
+     inkscape:snap-nodes="true">
     <inkscape:grid
        type="xygrid"
        id="grid2985"
@@ -60,10 +52,8 @@
        enabled="true"
        snapvisiblegridlinesonly="true"
        units="mm"
-       spacingx="3.5433072"
-       spacingy="3.5433072"
-       originx="0"
-       originy="0" />
+       spacingx="1mm"
+       spacingy="1mm" />
   </sodipodi:namedview>
   <metadata
      id="metadata7">
@@ -73,7 +63,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
         <cc:license
            rdf:resource="http://www.gnu.org/licenses/gpl-3.0.txt" />
       </cc:Work>
@@ -95,68 +85,26 @@
     <circle
        style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.07086614;stroke-linecap:square;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="path3818"
-       transform="translate(8.8582679,706.88976)"
-       cx="5.3149605"
-       cy="5.3149405"
+       cx="17.716536"
+       cy="715.74799"
        r="5.3149605" />
     <circle
-       transform="translate(334.84252,706.88976)"
        id="path3820"
        style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.07086614;stroke-linecap:square;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       cx="5.3149605"
-       cy="5.3149405"
+       cx="336.61417"
+       cy="715.74799"
        r="5.3149605" />
     <circle
-       transform="translate(8.8582679,1032.874)"
        id="path3822"
        style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.07086614;stroke-linecap:square;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       cx="5.3149605"
-       cy="5.3149405"
+       cx="17.716536"
+       cy="1034.6456"
        r="5.3149605" />
     <circle
        style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.07086614;stroke-linecap:square;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="path3824"
-       transform="translate(334.84252,1032.874)"
-       cx="5.3149605"
-       cy="5.3149405"
+       cx="336.61417"
+       cy="1034.6456"
        r="5.3149605" />
-    <circle
-       r="5.3149605"
-       cy="960.69672"
-       cx="75.915375"
-       style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.07086614;stroke-linecap:square;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="circle4488" />
-    <circle
-       r="5.3149605"
-       cy="789.69672"
-       cx="75.915375"
-       style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.07086614;stroke-linecap:square;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="circle4490" />
-    <circle
-       r="5.3149605"
-       cy="949.44672"
-       cx="309.91528"
-       style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.07086614;stroke-linecap:square;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="circle4492" />
-    <circle
-       r="5.3149605"
-       cy="800.94672"
-       cx="309.91528"
-       style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.07086614;stroke-linecap:square;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="circle4494" />
-    <rect
-       style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.07086615;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="rect3687"
-       width="170.07875"
-       height="14.173211"
-       x="95.669296"
-       y="783.07092" />
-    <rect
-       y="953.1496"
-       x="95.669296"
-       height="14.173211"
-       width="170.07875"
-       id="rect4494"
-       style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.07086615;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
   </g>
 </svg>
