@@ -63,9 +63,11 @@ void hwinit(struct plussy_params* p)
 		break;
 	case 3: // rev3 is PCB labeled "Plussy v2 Summit Edition" with WS2812B SMD LEDs
 		p->hwmap = hwversion_remap_rev2_ws2812b;
+		p->ws2811_options |= WS2811_OPTION_FASTMODE;
 		break;
 	case 7: // rev7 is PCB labeled "lightctrl v1" with 8 channels and RS485 drivers connected to WS2812B SMD LEDs
 		p->ws2811_options &= ~WS2811_OPTION_INVPOLARITY; // has no inverting transistor driver
+		p->ws2811_options |= WS2811_OPTION_FASTMODE;
 		break;
 	default: // unknown revision, assume no mapping
 		break;

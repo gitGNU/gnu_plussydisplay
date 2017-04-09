@@ -23,7 +23,8 @@
 
 #define WS2811_NLEDS 20
 
-#define WS2811_OPTION_INVPOLARITY 1
+#define WS2811_OPTION_INVPOLARITY (1)
+#define WS2811_OPTION_FASTMODE (1<<1)
 
 void ws2811_setup(uint8_t options);
 void ws2811_update(uint8_t* rgbData); // buf length: WS2811_NLEDS*3

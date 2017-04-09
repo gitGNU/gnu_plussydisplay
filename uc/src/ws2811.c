@@ -25,17 +25,18 @@
 #include "ws2811.h"
 
 // prescaler /1: 2.5us period
-//#define WS2811_PERIOD 105
-//#define WS2811_T0H 21
-//#define WS2811_T1H 50
-#define WS2811_PERIOD 60
-#define WS2811_T0H 12
-#define WS2811_T1H 29
+#define WS2811_SLOW_PERIOD 105
+#define WS2811_SLOW_T0H 21
+#define WS2811_SLOW_T1H 50
+#define WS2811_FAST_PERIOD 60
+#define WS2811_FAST_T0H 12
+#define WS2811_FAST_T1H 29
 
 #define PWM_DATA_LEN (8*3*WS2811_NLEDS+50)
 // => total time: ~1.3ms
 
 uint16_t pwmData[PWM_DATA_LEN];
+static uint8_t ws2811_options = 0;
 
 static volatile uint8_t done = 1;
 
@@ -47,9 +48,11 @@ static void rgb2pwm(uint8_t* rgbData)
 		for(int j = 0; j < 8; j++)
 		{
 			if(v & 1)
-				pwmData[8*i+7-j] = WS2811_T1H;
+				pwmData[8*i+7-j] = ws2811_options & WS2811_OPTION_FASTMODE ?
+						WS2811_FAST_T1H : WS2811_SLOW_T1H;
 			else
-				pwmData[8*i+7-j] = WS2811_T0H;
+				pwmData[8*i+7-j] = ws2811_options & WS2811_OPTION_FASTMODE ?
+						WS2811_FAST_T0H : WS2811_SLOW_T0H;
 			v >>= 1;
 		}
 	}
@@ -59,6 +62,7 @@ void ws2811_setup(uint8_t options)
 {
 	for(int i = 0; i < PWM_DATA_LEN; i++)
 		pwmData[i] = 0;
+	ws2811_options = options;
 	
 	// setup tim3 ch1 gpio
 	rcc_periph_clock_enable(RCC_GPIOB);
@@ -68,9 +72,11 @@ void ws2811_setup(uint8_t options)
 	// setup timer
 	rcc_periph_clock_enable(RCC_TIM3);
 	TIM3_PSC = 0; // no prescaler, 42 MHz counter
-	TIM3_ARR = WS2811_PERIOD; // counter period
+	TIM3_ARR = ws2811_options & WS2811_OPTION_FASTMODE ?
+			WS2811_FAST_PERIOD : WS2811_SLOW_PERIOD; // counter period
 	TIM3_CCMR1 = TIM_CCMR1_OC1M_PWM1 | TIM_CCMR1_OC1PE; // ch1 pwm mode, preload enabled
-	TIM3_CCR1 = WS2811_T0H; // initial duty cycle
+	TIM3_CCR1 = ws2811_options & WS2811_OPTION_FASTMODE ?
+			WS2811_FAST_T0H : WS2811_SLOW_T0H; // initial duty cycle
 	TIM3_CCER = TIM_CCER_CC1E | ((options & WS2811_OPTION_INVPOLARITY) ? TIM_CCER_CC1P : 0); // enable channel 1, inverse polarity
 	TIM3_CR1 = TIM_CR1_ARPE; // ARR preload
 	TIM3_DIER = TIM_DIER_CC1DE; // enable ch1 DMA request
