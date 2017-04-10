@@ -46,7 +46,7 @@ void usart_setup(void)
 	gpio_set_af(GPIOA, GPIO_AF7, GPIO2);
 	gpio_set_af(GPIOA, GPIO_AF7, GPIO3);
 	// USART
-	USART2_BRR = (22<<4)|13; // 22.8125 => 115200 Baud @ 42 MHz (APB1)
+	USART2_BRR = (13<<4)|0; // 13.0000 => 115200 Baud @ 24 MHz (APB1)
 	USART2_CR1 |= USART_CR1_TE | USART_CR1_RE; // enable tx and rx
 
 	// setup DMA (USART2_RX: Stream 5, Channel 4, USART2_TX: Stream 6, Channel 4)
